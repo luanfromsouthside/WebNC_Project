@@ -1,0 +1,33 @@
+﻿
+@{
+    var controller = ViewContext.RouteData.Values["controller"].ToString();
+    var action = ViewContext.RouteData.Values["action"].ToString();
+    string iconctrl, iconaction;
+    switch (controller)
+    {
+        case "Staffs": iconctrl = "badge"; break;
+        default: iconctrl = "home"; break;
+    }
+    switch (action)
+    {
+        case "Index": iconaction = "list_alt"; break;
+        case "Create": iconaction = "add_circle"; break;
+        case "Details": iconaction = "info"; break;
+        case "Edit": iconaction = "edit"; break;
+        default: iconaction = "home"; break;
+    }
+}
+
+<ol class="breadcrumb breadcrumb-bg-cyan">
+    <li>
+        <a href="javascript:void(0);">
+            <i class="material-icons">@iconctrl</i> @controller
+        </a>
+    </li>
+    <li>
+        <a href="javascript:void(0);">
+            <i class="material-icons">@iconaction</i> @action
+        </a>
+    </li>
+</ol>
+

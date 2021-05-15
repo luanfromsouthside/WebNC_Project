@@ -1,0 +1,52 @@
+﻿@{
+    var controller = ViewContext.RouteData.Values["controller"].ToString();
+    var action = ViewContext.RouteData.Values["action"].ToString();
+}
+
+<div class="menu">
+    <ul class="list">
+        <li class="header">MAIN NAVIGATION</li>
+        <li class="@(controller == "Home" ? "active" : "")">
+            <a href="@Url.Action("Index","Home")">
+                <i class="material-icons">home</i>
+                <span>Home</span>
+            </a>
+        </li>
+        <li class="@(controller == "Staffs" ? "active" : "")">
+            <a href="javascript:void(0);" class="menu-toggle">
+                <i class="material-icons">badge</i>
+                <span>Nhân Viên</span>
+            </a>
+            <ul class="ml-menu">
+                <li class="@(controller == "Staffs" && action == "Index" ? "active" : "")">
+                    <a href="@Url.Action("Index","Staffs")">
+                        <span>Danh sách nhân viên</span>
+                    </a>
+                </li>
+                <li class="@(controller == "Staffs" && action == "Create" ? "active" : "")">
+                    <a href="@Url.Action("Create","Staffs")">
+                        <span>Thêm mới nhân viên</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="@(controller == "Customers" ? "active" : "")">
+            <a href="javascript:void(0);" class="menu-toggle">
+                <i class="material-icons">badge</i>
+                <span>Khách Hàng</span>
+            </a>
+            <ul class="ml-menu">
+                <li class="@(controller == "Customers" && action == "Index" ? "active" : "")">
+                    <a href="@Url.Action("Index","Customers")">
+                        <span>Danh sách khách hàng</span>
+                    </a>
+                </li>
+                <li class="@(controller == "Customers" && action == "Create" ? "active" : "")">
+                    <a href="@Url.Action("Create","Customers")">
+                        <span>Thêm mới khách hàng</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>

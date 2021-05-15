@@ -1,0 +1,97 @@
+﻿@model WebNC_Project.Models.Service
+
+@{
+    ViewBag.Title = "Chi tiết dịch vụ";
+}
+@section styles {
+    <link href="~/Areas/Server/resources/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+}
+<div class="card">
+    <div class="header">
+        <h2>
+            @ViewBag.Title.ToUpper()
+        </h2>
+    </div>
+    <div class="body">
+        <div class="panel panel-default panel-post">
+            <div class="panel-heading">
+                <h4>Mã dịch vụ : @Model.ID</h4>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <tbody class="font-18">
+                        <tr>
+                            <td>@Html.DisplayNameFor(s => s.Name) </td>
+                            <td>@Html.DisplayFor(s => s.Name) </td>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayNameFor(s => s.Price) </td>
+                            <td>@Html.DisplayFor(s => s.Price) $</td>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayNameFor(s => s.Description) </td>
+                            <td>
+                                <blockquote>
+                                    @Model.Description
+                                </blockquote>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-footer">
+                <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
+                    <a href="@Url.Action("Edit","Services", new { id = Model.ID.Trim() })" class="btn btn-primary waves-effect">
+                        <i class="material-icons">edit</i>
+                        <span>EDIT</span>
+                    </a>
+                    <a href="javascript:void(0);" role="button" class="btn btn-danger waves-effect" id="btnRemove">
+                        <i class="material-icons">remove_circle</i>
+                        REMOVE
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="~/Areas/Server/resources/plugins/sweetalert/sweetalert.min.js"></script>
+    <script>
+        $(function () {
+            $('#btnRemove').on('click', function () {
+                remove();
+            });
+        });
+        function remove() {
+            swal({
+                title: "Do you want to remove this services?",
+                text: "Services ID: @Model.ID",
+                type: "warning",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true,
+            }, function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("Remove","Services")',
+                        data: { id: '@Model.ID.Trim()' },
+                        success: function () {
+                            swal("Remove success!");
+                            setTimeout(function () {
+                                location.href = "@Url.Action("Index")";
+                            }, 500);
+                        },
+                        complete: function (xhr) {
+                            swal(xhr.status);
+                        },
+                        error: function () {
+                            swal("Error when remove, Please try again");
+                            setTimeout(function () {
+                                location.reload();
+                         }, 500);
+                     }
+                });
+            });
+        }
+    </script>
+}
