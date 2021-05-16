@@ -12,6 +12,7 @@
                 <span>Home</span>
             </a>
         </li>
+        <!--Staff Menu-->
         <li class="@(controller == "Staffs" ? "active" : "")">
             <a href="javascript:void(0);" class="menu-toggle">
                 <i class="material-icons">badge</i>
@@ -30,6 +31,7 @@
                 </li>
             </ul>
         </li>
+        <!--Customer Menu-->
         <li class="@(controller == "Customers" ? "active" : "")">
             <a href="javascript:void(0);" class="menu-toggle">
                 <i class="material-icons">badge</i>
@@ -44,6 +46,44 @@
                 <li class="@(controller == "Customers" && action == "Create" ? "active" : "")">
                     <a href="@Url.Action("Create","Customers")">
                         <span>Thêm mới khách hàng</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!--Service Menu-->
+        <li class="@(controller == "Services" ? "active" : "")">
+            <a href="javascript:void(0);" class="menu-toggle">
+                <i class="material-icons">badge</i>
+                <span>Dịch Vụ</span>
+            </a>
+            <ul class="ml-menu">
+                <li class="@(controller == "Services" && action == "Index" ? "active" : "")">
+                    <a href="@Url.Action("Index","Services")">
+                        <span>Danh sách dịch vụ</span>
+                    </a>
+                </li>
+                <li class="@(controller == "Services" && action == "Create" ? "active" : "")">
+                    <a href="@Url.Action("Create","Services")">
+                        <span>Thêm mới dịch vụ</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!--Supply Menu-->
+        <li class="@(controller == "Supplies" ? "active" : "")">
+            <a href="javascript:void(0);" class="menu-toggle">
+                <i class="material-icons">badge</i>
+                <span>Vật Tư</span>
+            </a>
+            <ul class="ml-menu">
+                <li class="@(controller == "Supplies" && action == "Index" ? "active" : "")">
+                    <a href="@Url.Action("Index","Supplies")">
+                        <span>Danh sách vật tư</span>
+                    </a>
+                </li>
+                <li class="@(controller == "Supplies" && action == "Create" ? "active" : "")">
+                    <a href="@Url.Action("Create","Supplies")">
+                        <span>Thêm mới vật tư</span>
                     </a>
                 </li>
             </ul>

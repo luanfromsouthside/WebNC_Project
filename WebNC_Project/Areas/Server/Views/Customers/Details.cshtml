@@ -6,27 +6,51 @@
 @section styles {
     <link href="~/Areas/Server/resources/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 }
-<div class="card profile-card">
-    <div class="profile-header">&nbsp;</div>
-    <div class="profile-body">
-        <div class="content-area">
-            <h3>Khách hàng : @Model.ID</h3>
-            <p class="font-18">Họ tên: @Model.Name</p>
-            <p class="font-18">Ngày sinh: @Model.Birth.ToString("dd/MM/yyyy")</p>
-            <p class="font-18">Giới tính: @(Model.Gender ? "Nam" : "Nữ")</p>
-            <p class="font-18">SĐT: @Model.Phone</p>
-        </div>
+<div class="card">
+    <div class="header">
+        <h2>
+            @ViewBag.Title.ToUpper()
+        </h2>
     </div>
-    <div class="profile-footer">
-        <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
-            <a href="@Url.Action("Edit","Customers", new { id = Model.ID.Trim() })" class="btn btn-primary waves-effect">
-                <i class="material-icons">edit</i>
-                <span>EDIT</span>
-            </a>
-            <a href="javascript:void(0);" role="button" class="btn btn-danger waves-effect" id="btnRemove">
-                <i class="material-icons">remove_circle</i>
-                REMOVE
-            </a>
+    <div class="body">
+        <div class="panel panel-default panel-post">
+            <div class="panel-heading">
+                <h4>Mã khách hàng : @Model.ID</h4>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <tbody class="font-18">
+                        <tr>
+                            <td>@Html.DisplayNameFor(s => s.Name) </td>
+                            <td>@Html.DisplayFor(s => s.Name) </td>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayNameFor(s => s.Gender) </td>
+                            <td>@(Model.Gender ? "Name" : "Nữ")</td>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayNameFor(s => s.Birth) </td>
+                            <td>@Html.DisplayFor(s => s.Birth)</td>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayNameFor(s => s.Phone) </td>
+                            <td>@Html.DisplayFor(s => s.Phone)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-footer">
+                <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
+                    <a href="@Url.Action("Edit","Customers", new { id = Model.ID.Trim() })" class="btn btn-primary waves-effect">
+                        <i class="material-icons">edit</i>
+                        <span>EDIT</span>
+                    </a>
+                    <a href="javascript:void(0);" role="button" class="btn btn-danger waves-effect" id="btnRemove">
+                        <i class="material-icons">remove_circle</i>
+                        REMOVE
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

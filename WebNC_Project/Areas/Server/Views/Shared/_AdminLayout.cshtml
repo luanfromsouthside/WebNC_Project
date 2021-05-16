@@ -27,7 +27,7 @@
     <link href="~/Areas/Server/resources/css/themes/all-themes.css" rel="stylesheet" />
 
 </head>
-<body class="theme-red">
+<body class="theme-red ls-closed">
     <!-- Page Loader -->
     <div class="page-loader-wrapper">
         <div class="loader">
@@ -76,19 +76,19 @@
             <div class="row clearfix">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     @*<div class="card">
-                        <div class="header">
-                            <h2>
-                                @ViewBag.Title.ToUpper()
-                            </h2>
-                        </div>
-                        @RenderBody()
-                    </div>*@
+                            <div class="header">
+                                <h2>
+                                    @ViewBag.Title.ToUpper()
+                                </h2>
+                            </div>
+                            @RenderBody()
+                        </div>*@
                     @Html.Partial("_Breadcrumb")
                     @RenderBody()
                 </div>
             </div>
         </div>
-</section>
+    </section>
 
 
     <!-- Jquery Core Js -->

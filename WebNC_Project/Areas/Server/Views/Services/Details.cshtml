@@ -31,9 +31,11 @@
                         <tr>
                             <td>@Html.DisplayNameFor(s => s.Description) </td>
                             <td>
-                                <blockquote>
-                                    @Model.Description
-                                </blockquote>
+                                @foreach(var item in Model.Description.Trim().Split('\n')) {
+                                    <p>
+                                        @item.Trim()
+                                    </p>
+                                }
                             </td>
                         </tr>
                     </tbody>

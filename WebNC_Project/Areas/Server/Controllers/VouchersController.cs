@@ -3,97 +3,96 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using WebNC_Project.DAO;
 using WebNC_Project.Models;
+using WebNC_Project.DAO;
 
 namespace WebNC_Project.Areas.Server.Controllers
 {
-    public class ServicesController : Controller
+    public class VouchersController : Controller
     {
-        // GET: Server/Services
+        // GET: Server/Vouchers
         public ActionResult Index(string search)
         {
             ViewBag.Search = search;
-            return View(ServiceDAO.Instance.GetAll());
+            return View(VoucherDAO.Instance.GetAll());
         }
 
-        // GET: Server/Services/Details/5
+        // GET: Server/Vouchers/Details/5
         public ActionResult Details(string id)
         {
-            Service result = ServiceDAO.Instance.GetByID(id);
+            var result = VoucherDAO.Instance.GetByID(id);
             return View(result);
         }
 
-        // GET: Server/Services/Create
+        // GET: Server/Vouchers/Create
         public ActionResult Create()
         {
-            return View(new Service());
+            return View(new Voucher());
         }
 
-        // POST: Server/Services/Create
+        // POST: Server/Vouchers/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(Service service)
+        public ActionResult Create(Voucher voucher)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var entity = ServiceDAO.Instance.GetByID(service.ID);
+                    var entity = VoucherDAO.Instance.GetByID(voucher.Code);
                     if (entity != null)
                     {
-                        ModelState.AddModelError(service.ID, $"The services {service.ID} existed");
-                        return View(service);
+                        ModelState.AddModelError("Code", "Code was exist, try again with new Code");
+                        return View(voucher);
                     }
-                    ServiceDAO.Instance.Create(service);
+                    VoucherDAO.Instance.Create(voucher);
                     return RedirectToAction("Index");
                 }
-                return View(service);
+                return View(voucher);
             }
             catch
             {
-                ModelState.AddModelError("", "Server can not create services");
-                return View(service);
+                ModelState.AddModelError("", "Server can not create supply");
+                return View(voucher);
             }
         }
 
-        // GET: Server/Services/Edit/5
+        // GET: Server/Vouchers/Edit/5
         public ActionResult Edit(string id)
         {
-            Service service = ServiceDAO.Instance.GetByID(id);
-            return View(service);
+            var result = VoucherDAO.Instance.GetByID(id);
+            return View(result);
         }
 
-        // POST: Server/Services/Edit/5
+        // POST: Server/Vouchers/Edit/5
         [HttpPost]
-        public ActionResult Edit(Service service)
+        public ActionResult Edit(Voucher voucher)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    ServiceDAO.Instance.Edit(service);
-                    return RedirectToAction("Details", new { id = service.ID.Trim() });
+                    VoucherDAO.Instance.Edit(voucher);
+                    return RedirectToAction("Details", new { id = voucher.Code.Trim() });
                 }
-                return View(service);
+                return View(voucher);
 
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                return View(service);
+                return View(voucher);
             }
         }
 
-        // POST: Server/Services/Delete/5
+        // POST: Server/Vouchers/Delete/5
         [HttpPost]
         public ActionResult Remove(string id)
         {
-            var result = ServiceDAO.Instance.GetByID(id);
+            var result = VoucherDAO.Instance.GetByID(id);
             if (result == null) return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
             try
             {
-                StaffDAO.Instance.Remove(id);
+                VoucherDAO.Instance.Remove(id);
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
             }
             catch

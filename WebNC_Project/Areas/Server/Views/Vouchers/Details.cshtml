@@ -1,7 +1,7 @@
-﻿@model WebNC_Project.Models.Staff
+﻿@model WebNC_Project.Models.Voucher
 
 @{
-    ViewBag.Title = "Thông tin nhân viên";
+    ViewBag.Title = "Thông tin Voucher";
 }
 @section styles {
     <link href="~/Areas/Server/resources/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
@@ -15,41 +15,33 @@
     <div class="body">
         <div class="panel panel-default panel-post">
             <div class="panel-heading">
-                <h4>Mã nhân viên : @Model.ID</h4>
+                <h4>@Html.DisplayNameFor(s=>s.Code) : @Model.Code</h4>
             </div>
             <div class="panel-body">
                 <table class="table">
                     <tbody class="font-18">
                         <tr>
-                            <td>@Html.DisplayNameFor(s => s.Name) </td>
-                            <td>@Html.DisplayFor(s => s.Name) </td>
+                            <td>@Html.DisplayNameFor(s => s.FromDate) </td>
+                            <td>@Model.FromDate.ToString("dd/MM/yyyy") </td>
                         </tr>
                         <tr>
-                            <td>@Html.DisplayNameFor(s => s.Gender) </td>
-                            <td>@(Model.Gender ? "Name" : "Nữ")</td>
+                            <td>@Html.DisplayNameFor(s => s.ToDate) </td>
+                            <td>@Model.ToDate.ToString("dd/MM/yyyy")</td>
                         </tr>
                         <tr>
-                            <td>@Html.DisplayNameFor(s => s.Birth) </td>
-                            <td>@Html.DisplayFor(s => s.Birth)</td>
+                            <td>@Html.DisplayNameFor(s => s.Discount) </td>
+                            <td>@Model.Discount %</td>
                         </tr>
                         <tr>
-                            <td>@Html.DisplayNameFor(s => s.Phone) </td>
-                            <td>@Html.DisplayFor(s => s.Phone)</td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.PermissionID) </td>
-                            <td>@Html.DisplayFor(s => s.Permission.Name)</td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.Email) </td>
-                            <td>@Html.DisplayFor(s => s.Email)</td>
+                            <td>@Html.DisplayNameFor(s => s.Condition) </td>
+                            <td>&GreaterEqual; @Model.Condition</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class="panel-footer">
                 <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
-                    <a href="@Url.Action("Edit","Staffs", new { id = Model.ID.Trim() })" class="btn btn-primary waves-effect">
+                    <a href="@Url.Action("Edit","Vouchers", new { id = Model.Code.Trim() })" class="btn btn-primary waves-effect">
                         <i class="material-icons">edit</i>
                         <span>EDIT</span>
                     </a>
@@ -72,8 +64,8 @@
         });
         function remove() {
             swal({
-                title: "Do you want to remove this staff?",
-                text: "Staff ID: @Model.ID",
+                title: "Do you want to remove this voucher?",
+                text: "Voucher code: @Model.Code",
                 type: "warning",
                 showCancelButton: true,
                 closeOnConfirm: false,
@@ -81,19 +73,22 @@
             }, function () {
                     $.ajax({
                         type: 'POST',
-                        url: '@Url.Action("Remove","Staffs")',
-                        data: { id: '@Model.ID.Trim()' },
+                        url: '@Url.Action("Remove")',
+                        data: { id: '@Model.Code.Trim()' },
                         success: function () {
                             swal("Remove success!");
                             setTimeout(function () {
                                 location.href = "@Url.Action("Index")";
-                            }, 1000);
+                            }, 500);
+                        },
+                        complete: function (xhr) {
+                            swal(xhr.status);
                         },
                         error: function () {
                             swal("Error when remove, Please try again");
                             setTimeout(function () {
                                 location.reload();
-                        }, 1000);
+                         }, 500);
                      }
                 });
             });

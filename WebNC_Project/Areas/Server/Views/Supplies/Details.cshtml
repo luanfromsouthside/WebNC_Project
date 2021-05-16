@@ -1,7 +1,7 @@
-﻿@model WebNC_Project.Models.Staff
+﻿@model WebNC_Project.Models.Supply
 
 @{
-    ViewBag.Title = "Thông tin nhân viên";
+    ViewBag.Title = "Chi tiết vật tư";
 }
 @section styles {
     <link href="~/Areas/Server/resources/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
@@ -15,7 +15,7 @@
     <div class="body">
         <div class="panel panel-default panel-post">
             <div class="panel-heading">
-                <h4>Mã nhân viên : @Model.ID</h4>
+                <h4>@Html.DisplayNameFor(s => s.ID) : @Model.ID</h4>
             </div>
             <div class="panel-body">
                 <table class="table">
@@ -25,31 +25,15 @@
                             <td>@Html.DisplayFor(s => s.Name) </td>
                         </tr>
                         <tr>
-                            <td>@Html.DisplayNameFor(s => s.Gender) </td>
-                            <td>@(Model.Gender ? "Name" : "Nữ")</td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.Birth) </td>
-                            <td>@Html.DisplayFor(s => s.Birth)</td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.Phone) </td>
-                            <td>@Html.DisplayFor(s => s.Phone)</td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.PermissionID) </td>
-                            <td>@Html.DisplayFor(s => s.Permission.Name)</td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.Email) </td>
-                            <td>@Html.DisplayFor(s => s.Email)</td>
+                            <td>@Html.DisplayNameFor(s => s.Total) </td>
+                            <td>@Html.DisplayFor(s => s.Total)</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class="panel-footer">
                 <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
-                    <a href="@Url.Action("Edit","Staffs", new { id = Model.ID.Trim() })" class="btn btn-primary waves-effect">
+                    <a href="@Url.Action("Edit","Supplies", new { id = Model.ID.Trim() })" class="btn btn-primary waves-effect">
                         <i class="material-icons">edit</i>
                         <span>EDIT</span>
                     </a>
@@ -72,8 +56,8 @@
         });
         function remove() {
             swal({
-                title: "Do you want to remove this staff?",
-                text: "Staff ID: @Model.ID",
+                title: "Do you want to remove this supply?",
+                text: "Supply ID: @Model.ID",
                 type: "warning",
                 showCancelButton: true,
                 closeOnConfirm: false,
@@ -81,19 +65,22 @@
             }, function () {
                     $.ajax({
                         type: 'POST',
-                        url: '@Url.Action("Remove","Staffs")',
+                        url: '@Url.Action("Remove")',
                         data: { id: '@Model.ID.Trim()' },
                         success: function () {
                             swal("Remove success!");
                             setTimeout(function () {
                                 location.href = "@Url.Action("Index")";
-                            }, 1000);
+                            }, 500);
+                        },
+                        complete: function (xhr) {
+                            swal(xhr.status);
                         },
                         error: function () {
                             swal("Error when remove, Please try again");
                             setTimeout(function () {
                                 location.reload();
-                        }, 1000);
+                         }, 500);
                      }
                 });
             });

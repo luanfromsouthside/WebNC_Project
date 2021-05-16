@@ -93,7 +93,7 @@ namespace WebNC_Project.Areas.Server.Controllers
             if (result == null) return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
             try
             {
-                StaffDAO.Instance.Remove(id);
+                ServiceDAO.Instance.Remove(id);
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
             }
             catch

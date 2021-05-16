@@ -31,6 +31,8 @@ namespace WebNC_Project.DAO
 
         public int Create(Service service)
         {
+            service.ID = service.ID.Trim().ToUpper();
+            service.Description = service.Description.Trim();
             db.Services.Add(service);
             return db.SaveChanges();
         }
