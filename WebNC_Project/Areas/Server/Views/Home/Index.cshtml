@@ -5,3 +5,10 @@
 
 <h2>Index</h2>
 
+@using (Html.BeginForm("Index","Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <input type="file" name="editor1" />
+    <button type="submit">sub</button>
+}
+@section scripts{
+}

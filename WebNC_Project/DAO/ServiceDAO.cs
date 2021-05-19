@@ -26,7 +26,7 @@ namespace WebNC_Project.DAO
 
         public Service GetByID(string id)
         {
-            return db.Services.Find(id);
+            return db.Services.Find(id.Trim().ToUpper());
         }
 
         public int Create(Service service)

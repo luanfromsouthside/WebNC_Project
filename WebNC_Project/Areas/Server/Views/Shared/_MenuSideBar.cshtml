@@ -34,7 +34,7 @@
         <!--Customer Menu-->
         <li class="@(controller == "Customers" ? "active" : "")">
             <a href="javascript:void(0);" class="menu-toggle">
-                <i class="material-icons">badge</i>
+                <i class="material-icons">people</i>
                 <span>Khách Hàng</span>
             </a>
             <ul class="ml-menu">
@@ -53,7 +53,7 @@
         <!--Service Menu-->
         <li class="@(controller == "Services" ? "active" : "")">
             <a href="javascript:void(0);" class="menu-toggle">
-                <i class="material-icons">badge</i>
+                <i class="material-icons">room_service</i>
                 <span>Dịch Vụ</span>
             </a>
             <ul class="ml-menu">
@@ -72,7 +72,7 @@
         <!--Supply Menu-->
         <li class="@(controller == "Supplies" ? "active" : "")">
             <a href="javascript:void(0);" class="menu-toggle">
-                <i class="material-icons">badge</i>
+                <i class="material-icons">personal_video</i>
                 <span>Vật Tư</span>
             </a>
             <ul class="ml-menu">
@@ -84,6 +84,25 @@
                 <li class="@(controller == "Supplies" && action == "Create" ? "active" : "")">
                     <a href="@Url.Action("Create","Supplies")">
                         <span>Thêm mới vật tư</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!--Vouchers Menu-->
+        <li class="@(controller == "Vouchers" ? "active" : "")">
+            <a href="javascript:void(0);" class="menu-toggle">
+                <i class="material-icons">card_giftcard</i>
+                <span>Voucher</span>
+            </a>
+            <ul class="ml-menu">
+                <li class="@(controller == "Vouchers" && action == "Index" ? "active" : "")">
+                    <a href="@Url.Action("Index","Vouchers")">
+                        <span>Danh sách voucher</span>
+                    </a>
+                </li>
+                <li class="@(controller == "Vouchers" && action == "Create" ? "active" : "")">
+                    <a href="@Url.Action("Create","Vouchers")">
+                        <span>Thêm mới voucher</span>
                     </a>
                 </li>
             </ul>

@@ -33,6 +33,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         // POST: Server/Services/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
         public ActionResult Create(Service service)
         {
             try
@@ -66,6 +67,8 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         // POST: Server/Services/Edit/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
         public ActionResult Edit(Service service)
         {
             try
@@ -93,7 +96,7 @@ namespace WebNC_Project.Areas.Server.Controllers
             if (result == null) return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
             try
             {
-                StaffDAO.Instance.Remove(id);
+                ServiceDAO.Instance.Remove(id);
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
             }
             catch

@@ -38,6 +38,16 @@ namespace WebNC_Project.Areas.Server.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    if(CheckDate(voucher.FromDate, voucher.ToDate))
+                    {
+                        ModelState.AddModelError("ToDate", "The date end of voucher was not valid");
+                        return View(voucher);
+                    }
+                    if (voucher.FromDate.Date <= DateTime.Today.Date)
+                    {
+                        ModelState.AddModelError("FromDate", "The date begin of voucher cannot smaller than to day");
+                        return View(voucher);
+                    }
                     var entity = VoucherDAO.Instance.GetByID(voucher.Code);
                     if (entity != null)
                     {
@@ -71,6 +81,16 @@ namespace WebNC_Project.Areas.Server.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    if (CheckDate(voucher.FromDate, voucher.ToDate))
+                    {
+                        ModelState.AddModelError("ToDate", "The date end of voucher was not valid");
+                        return View(voucher);
+                    }
+                    if(voucher.FromDate.Date <= DateTime.Today.Date)
+                    {
+                        ModelState.AddModelError("FromDate", "The date begin of voucher cannot smaller than to day");
+                        return View(voucher);
+                    }
                     VoucherDAO.Instance.Edit(voucher);
                     return RedirectToAction("Details", new { id = voucher.Code.Trim() });
                 }
@@ -99,6 +119,11 @@ namespace WebNC_Project.Areas.Server.Controllers
             {
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
             }
+        }
+
+        private bool CheckDate(DateTime from, DateTime to)
+        {
+            return from.Date > to.Date ? false : true;
         }
     }
 }

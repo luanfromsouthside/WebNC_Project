@@ -38,7 +38,7 @@
             @Html.LabelFor(s => s.Description)
             <div class="form-group">
                 <div class="form-line">
-                    @Html.TextAreaFor(s => s.Description, new { @class = "form-control no-resize auto-growth" })
+                    @Html.TextAreaFor(s => s.Description)
                 </div>
                 @Html.ValidationMessageFor(s => s.Description, "", new { @class = "text-danger" })
             </div>
@@ -46,3 +46,9 @@
         }
     </div>
 </div>
+@section scripts{
+    <script src="~/Areas/Server/resources/plugins/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('Description');
+    </script>
+}

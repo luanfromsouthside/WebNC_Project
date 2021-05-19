@@ -1,4 +1,4 @@
-namespace WebNC_Project.Models
+﻿namespace WebNC_Project.Models
 {
     using System;
     using System.Collections.Generic;
@@ -14,10 +14,15 @@ namespace WebNC_Project.Models
             Rooms = new HashSet<Room>();
         }
 
-        [StringLength(10)]
+        [Required(ErrorMessage = "{0} is required")]
+        [MaxLength(10,ErrorMessage = "{0} contains at most 10 characters")]
+        [MinLength(4, ErrorMessage = "{0} contains at least 4 characters")]
+        [Display(Name = "Mã loại phòng")]
         public string ID { get; set; }
 
-        [StringLength(30)]
+        [StringLength(30,ErrorMessage = "{0} contains at most 30 characters")]
+        [Required(ErrorMessage = "{0} is required")]
+        [Display(Name = "Tên loại phòng")]
         public string NameType { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
