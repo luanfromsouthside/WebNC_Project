@@ -12,14 +12,14 @@ namespace WebNC_Project.Areas.Server.Controllers
     public class StaffsController : Controller
     {
         // GET: Server/Staffs
-        public ActionResult Index(string search)
+        public async Task<ActionResult> Index(string search)
         {
             ViewBag.Search = search;
-            return View(StaffDAO.Instance.GetAll());
+            return View(await StaffDAO.GetAll());
         }
-        private void SetListPermis()
+        private async void SetListPermis()
         {
-            SelectList listPer = new SelectList(PermissionDAO.Instance.GetAll(), "ID", "Name");
+            SelectList listPer = new SelectList(await PermissionDAO.GetAll(), "ID", "Name");
             ViewBag.ListPer = listPer;
         }
 
@@ -30,15 +30,15 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(Staff staff)
+        public async Task<ActionResult> Create(Staff staff)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var entity = StaffDAO.Instance.GetByID(staff.ID);
+                    var entity = StaffDAO.GetByID(staff.ID);
                     if (entity != null) return RedirectToAction("Create");
-                    StaffDAO.Instance.Create(staff);
+                    await StaffDAO.Create(staff);
                     return RedirectToAction("Index");
                 }
                 SetListPermis();
@@ -52,28 +52,28 @@ namespace WebNC_Project.Areas.Server.Controllers
             }
         }
 
-        public ActionResult Details(string id)
+        public async Task<ActionResult> Details(string id)
         {
-            var result = StaffDAO.Instance.GetByID(id);
+            var result = await StaffDAO.GetByID(id);
             return View(result);
         }
 
-        public ActionResult Edit(string id)
+        public async Task<ActionResult> Edit(string id)
         {
             SetListPermis();
-            var result = StaffDAO.Instance.GetByID(id);
+            var result = await StaffDAO.GetByID(id);
             return View(result);
         }
 
         [HttpPost]
-        public ActionResult Edit(Staff staff)
+        public async Task<ActionResult> Edit(Staff staff)
         {
             SetListPermis();
             try
             {
                 if (ModelState.IsValid)
                 {
-                    StaffDAO.Instance.Edit(staff);
+                    await StaffDAO.Edit(staff);
                     return RedirectToAction("Details", new { id = staff.ID.Trim() });
                 }
                 return View(staff);
@@ -87,13 +87,13 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         [HttpPost]
-        public ActionResult Remove(string id)
+        public async Task<ActionResult> Remove(string id)
         {
-            var result = StaffDAO.Instance.GetByID(id);
+            var result = StaffDAO.GetByID(id);
             if (result == null) return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
             try
             {
-                ServiceDAO.Instance.Remove(id);
+                await StaffDAO.Remove(id);
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
             }
             catch

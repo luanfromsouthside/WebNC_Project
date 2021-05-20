@@ -8,57 +8,61 @@ using WebNC_Project.Models;
 
 namespace WebNC_Project.DAO
 {
-    public class StaffDAO
+    public static class StaffDAO
     {
-        private static readonly ResortContext db = new ResortContext();
-        private static StaffDAO instance;
-        private StaffDAO() { }
-        public static StaffDAO Instance
+        public static async Task<IEnumerable<Staff>> GetAll()
         {
-            get
+            using(ResortContext db = new ResortContext())
             {
-                if (instance == null) instance = new StaffDAO();
-                return instance;
+                return await db.Staffs.Include(s => s.Permission).ToListAsync();
             }
         }
-        public IEnumerable<Staff> GetAll()
-        {
-            return db.Staffs.ToList();
-        }
 
-        public Staff GetByID(string id)
+        public static async Task<Staff> GetByID(string id)
         {
-            return db.Staffs.Find(id);
-        }
-
-        public int Create(Staff staff)
-        {
-            db.Staffs.Add(staff);
-            return db.SaveChanges();
-        }
-
-        public int Remove(string id)
-        {
-            Staff staff = GetByID(id);
-            db.Staffs.Remove(staff);
-            return db.SaveChanges();
-        }
-
-        public int Edit(Staff staff)
-        {
-            Staff enti = db.Staffs.SingleOrDefault(s => s.ID == staff.ID);
-            if (enti != null)
+            using (ResortContext db = new ResortContext())
             {
-                enti.Name = staff.Name;
-                enti.Birth = staff.Birth;
-                enti.Gender = staff.Gender;
-                enti.Password = staff.Password;
-                enti.PermissionID = staff.PermissionID;
-                enti.Phone = staff.Phone;
-                enti.Email = staff.Email;
-                return db.SaveChanges();
+                return await db.Staffs.FindAsync(id);
             }
-            throw new Exception("Entity does not exist");
+        }
+
+        public static async Task<int> Create(Staff staff)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                db.Staffs.Add(staff);
+                return await db.SaveChangesAsync();
+            }
+        }
+
+        public static async Task<int> Remove(string id)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                Staff staff = await db.Staffs.FindAsync(id);
+                db.Staffs.Remove(staff);
+                return await db.SaveChangesAsync();
+            }
+        }
+
+        public static async Task<int> Edit(Staff staff)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                Staff enti = await db.Staffs.FindAsync(staff.ID);
+                if (enti != null)
+                {
+                    enti.Name = staff.Name;
+                    enti.Birth = staff.Birth;
+                    enti.Gender = staff.Gender;
+                    enti.Password = staff.Password;
+                    enti.PermissionID = staff.PermissionID;
+                    enti.Phone = staff.Phone;
+                    enti.Email = staff.Email;
+                    return await db.SaveChangesAsync();
+                }
+                throw new Exception("Entity does not exist");
+            }
         }
     }
 }

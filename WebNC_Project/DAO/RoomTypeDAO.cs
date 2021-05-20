@@ -8,52 +8,56 @@ using WebNC_Project.Models;
 
 namespace WebNC_Project.DAO
 {
-    public class RoomTypeDAO
+    public static class RoomTypeDAO
     {
-        private static readonly ResortContext db = new ResortContext();
-        private static RoomTypeDAO instance;
-        private RoomTypeDAO() { }
-        public static RoomTypeDAO Instance
+        public static async Task<IEnumerable<RoomType>> GetAll()
         {
-            get
+            using(ResortContext db = new ResortContext())
             {
-                if (instance == null) instance = new RoomTypeDAO();
-                return instance;
+                return await db.RoomTypes.Include(r => r.Rooms).ToListAsync();
             }
         }
-        public async Task<IEnumerable<RoomType>> GetAll()
-        {
-            return await db.RoomTypes.ToListAsync();
-        }
 
-        public async Task<RoomType> GetByID(string id)
+        public static async Task<RoomType> GetByID(string id)
         {
-            return await db.RoomTypes.FindAsync(id);
-        }
-
-        public int Create(RoomType type)
-        {
-            type.ID = type.ID.Trim().ToUpper();
-            db.RoomTypes.Add(type);
-            return db.SaveChanges();
-        }
-
-        public async Task<int> Remove(string id)
-        {
-            RoomType type = await GetByID(id);
-            db.RoomTypes.Remove(type);
-            return db.SaveChanges();
-        }
-
-        public int Edit(RoomType type)
-        {
-            RoomType enti = db.RoomTypes.SingleOrDefault(s => s.ID.ToLower() == type.ID.Trim().ToLower());
-            if (enti != null)
+            using (ResortContext db = new ResortContext())
             {
-                enti.NameType = type.NameType;
-                return db.SaveChanges();
+                return await db.RoomTypes.Include(r => r.Rooms).SingleOrDefaultAsync(r => r.ID == id);
             }
-            throw new Exception("Entity does not exist");
+        }
+
+        public static async Task<int> Create(RoomType type)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                type.ID = type.ID.Trim().ToUpper();
+                db.RoomTypes.Add(type);
+                return await db.SaveChangesAsync();
+            }
+        }
+
+        public static async Task<int> Remove(string id)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                RoomType type = await GetByID(id);
+                db.RoomTypes.Remove(type);
+                return await db.SaveChangesAsync();
+            }
+        }
+
+        public static async Task<int> Edit(RoomType type)
+        {
+            using(ResortContext db = new ResortContext())
+            {
+                RoomType enti = await db.RoomTypes.FindAsync(type.ID);
+                if (enti != null)
+                {
+                    enti.NameType = type.NameType;
+                    return db.SaveChanges();
+                }
+                throw new Exception("Entity does not exist");
+            }
         }
     }
 }

@@ -6,22 +6,23 @@ using System.Web.Mvc;
 using System.Data.Entity.Infrastructure;
 using WebNC_Project.Models;
 using WebNC_Project.DAO;
+using System.Threading.Tasks;
 
 namespace WebNC_Project.Areas.Server.Controllers
 {
     public class CustomersController : Controller
     {
         // GET: Server/Customers
-        public ActionResult Index(string search)
+        public async Task<ActionResult> Index(string search)
         {
             ViewBag.Search = search;
-            return View(CustomerDAO.Instance.GetAll());
+            return View(await CustomerDAO.GetAll());
         }
 
         // GET: Server/Customers/Details/5
-        public ActionResult Details(string id)
+        public async Task<ActionResult> Details(string id)
         {
-            Customer cus = CustomerDAO.Instance.GetByID(id);
+            Customer cus = await CustomerDAO.GetByID(id);
             return View(cus);
         }
 
@@ -34,19 +35,19 @@ namespace WebNC_Project.Areas.Server.Controllers
         // POST: Server/Customers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Customer customer)
+        public async Task<ActionResult> Create(Customer customer)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var entity = CustomerDAO.Instance.GetByID(customer.ID);
+                    var entity = await CustomerDAO.GetByID(customer.ID);
                     if (entity != null)
                     {
                         ModelState.AddModelError("", $"The username {customer.ID} existed");
                         return View(customer);
                     }
-                    CustomerDAO.Instance.Create(customer);
+                    await CustomerDAO.Create(customer);
                     return RedirectToAction("Index");
                 }
                 return View(customer);
@@ -59,21 +60,21 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Customers/Edit/5
-        public ActionResult Edit(string id)
+        public async Task<ActionResult> Edit(string id)
         {
-            Customer cus = CustomerDAO.Instance.GetByID(id);
+            Customer cus = await CustomerDAO.GetByID(id);
             return View(cus);
         }
 
         // POST: Server/Customers/Edit/5
         [HttpPost]
-        public ActionResult Edit(Customer customer)
+        public async Task<ActionResult> Edit(Customer customer)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    CustomerDAO.Instance.Edit(customer);
+                    await CustomerDAO.Edit(customer);
                     return RedirectToAction("Details", new { id = customer.ID.Trim() });
                 }
                 return View(customer);
@@ -88,13 +89,13 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         // POST: Server/Customers/Delete/5
         [HttpPost]
-        public ActionResult Remove(string id)
+        public async Task<ActionResult> Remove(string id)
         {
-            var result = CustomerDAO.Instance.GetByID(id);
+            var result = await CustomerDAO.GetByID(id);
             if (result == null) return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
             try
             {
-                CustomerDAO.Instance.Remove(id);
+                await CustomerDAO.Remove(id);
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
             }
             catch

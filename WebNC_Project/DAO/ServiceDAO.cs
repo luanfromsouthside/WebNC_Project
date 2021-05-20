@@ -3,58 +3,64 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using WebNC_Project.Models;
+using System.Threading.Tasks;
+using System.Data.Entity;
 
 namespace WebNC_Project.DAO
 {
-    public class ServiceDAO
+    public static class ServiceDAO
     {
-        private static readonly ResortContext db = new ResortContext();
-        private static ServiceDAO instance;
-        private ServiceDAO() { }
-        public static ServiceDAO Instance
+        public static async Task<IEnumerable<Service>> GetAll()
         {
-            get
+            using(ResortContext db = new ResortContext())
             {
-                if (instance == null) instance = new ServiceDAO();
-                return instance;
+                return await db.Services.ToListAsync();
             }
         }
-        public IEnumerable<Service> GetAll()
-        {
-            return db.Services.ToList();
-        }
 
-        public Service GetByID(string id)
+        public static async Task<Service> GetByID(string id)
         {
-            return db.Services.Find(id.Trim().ToUpper());
-        }
-
-        public int Create(Service service)
-        {
-            service.ID = service.ID.Trim().ToUpper();
-            service.Description = service.Description.Trim();
-            db.Services.Add(service);
-            return db.SaveChanges();
-        }
-
-        public int Remove(string id)
-        {
-            Service service = GetByID(id);
-            db.Services.Remove(service);
-            return db.SaveChanges();
-        }
-
-        public int Edit(Service service)
-        {
-            Service enti = db.Services.SingleOrDefault(s => s.ID == service.ID);
-            if (enti != null)
+            using (ResortContext db = new ResortContext())
             {
-                enti.Name = service.Name;
-                enti.Description = service.Description;
-                enti.Price = service.Price;
-                return db.SaveChanges();
+                return await db.Services.FindAsync(id);
             }
-            throw new Exception("Entity does not exist");
+        }
+
+        public static async Task<int> Create(Service service)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                service.ID = service.ID.Trim().ToUpper();
+                service.Description = service.Description.Trim();
+                db.Services.Add(service);
+                return await db.SaveChangesAsync();
+            }
+        }
+
+        public static async Task<int> Remove(string id)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                Service service = await db.Services.FindAsync(id);
+                db.Services.Remove(service);
+                return await db.SaveChangesAsync();
+            }
+        }
+
+        public static async Task<int> Edit(Service service)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                Service enti = await db.Services.SingleOrDefaultAsync(s => s.ID == service.ID);
+                if (enti != null)
+                {
+                    enti.Name = service.Name;
+                    enti.Description = service.Description;
+                    enti.Price = service.Price;
+                    return await db.SaveChangesAsync();
+                }
+                throw new Exception("Entity does not exist");
+            }
         }
     }
 }

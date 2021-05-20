@@ -12,6 +12,30 @@
                 <span>Home</span>
             </a>
         </li>
+        <!--Room Menu-->
+        <li class="@(controller == "Rooms" || controller == "RoomTypes" ? "active" : "")">
+            <a href="javascript:void(0);" class="menu-toggle">
+                <i class="material-icons">badge</i>
+                <span>Phòng</span>
+            </a>
+            <ul class="ml-menu">
+                <li class="@(controller == "Rooms" && action == "Index" ? "active" : "")">
+                    <a href="@Url.Action("Index","Rooms")">
+                        <span>Danh sách phòng</span>
+                    </a>
+                </li>
+                <li class="@(controller == "Rooms" && action == "Create" ? "active" : "")">
+                    <a href="@Url.Action("Create","Rooms")">
+                        <span>Thêm mới phòng</span>
+                    </a>
+                </li>
+                <li class="@(controller == "RoomTypes" ? "active" : "")">
+                    <a href="@Url.Action("Index","RoomTypes")">
+                        <span>Loại phòng</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
         <!--Staff Menu-->
         <li class="@(controller == "Staffs" ? "active" : "")">
             <a href="javascript:void(0);" class="menu-toggle">

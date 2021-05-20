@@ -5,24 +5,25 @@ using System.Web;
 using System.Web.Mvc;
 using WebNC_Project.Models;
 using WebNC_Project.DAO;
-using WebNC_Project.ViewModel;
+using System.Threading.Tasks;
+using System.Data.Entity;
 
 namespace WebNC_Project.Areas.Server.Controllers
 {
     public class SuppliesController : Controller
     {
         // GET: Server/Supplies
-        public ActionResult Index(string search)
+        public async Task<ActionResult> Index(string search)
         {
             ViewBag.Search = search;
-            return View(SupplyDAO.Instance.GetAll());
+            return View(await SupplyDAO.GetAll());
         }
 
         // GET: Server/Supplies/Details/5
-        public ActionResult Details(string id)
+        public async Task<ActionResult> Details(string id)
         {
-            var result = SupplyDAO.Instance.GetByID(id);
-            return View(result);
+            var result = SupplyDAO.GetByID(id);
+            return View(await result);
         }
 
         // GET: Server/Supplies/Create
@@ -33,19 +34,19 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         // POST: Server/Supplies/Create
         [HttpPost]
-        public ActionResult Create(Supply sup)
+        public async Task<ActionResult> Create(Supply sup)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var entity = SupplyDAO.Instance.GetByID(sup.ID);
+                    var entity = await SupplyDAO.GetByID(sup.ID);
                     if (entity != null)
                     {
                         ModelState.AddModelError("ID", "ID was exist, try again with new ID");
                         return View(sup);
                     }
-                    SupplyDAO.Instance.Create(sup);
+                    await SupplyDAO.Create(sup);
                     return RedirectToAction("Index");
                 }
                 return View(sup);
@@ -58,15 +59,15 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Supplies/Edit/5
-        public ActionResult Edit(string id)
+        public async Task<ActionResult> Edit(string id)
         {
-            Supply result = SupplyDAO.Instance.GetByID(id);
+            Supply result = await SupplyDAO.GetByID(id);
             return View(result);
         }
 
         // POST: Server/Supplies/Edit/5
         [HttpPost]
-        public ActionResult Edit(Supply model, string EditType, int? Count)
+        public async Task<ActionResult> Edit(Supply model, string EditType, int? Count)
         {
             try
             {
@@ -77,7 +78,7 @@ namespace WebNC_Project.Areas.Server.Controllers
                 } 
                 if (ModelState.IsValid)
                 {
-                    SupplyDAO.Instance.Edit(model,EditType,Count);
+                    await SupplyDAO.Edit(model,EditType,Count);
                     return RedirectToAction("Details", new { id = model.ID.Trim() });
                 }
                 return View(model);
@@ -91,13 +92,13 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         // POST: Server/Supplies/Delete/5
         [HttpPost]
-        public ActionResult Remove(string id)
+        public async Task<ActionResult> Remove(string id)
         {
-            var result = SupplyDAO.Instance.GetByID(id);
+            var result = await SupplyDAO.GetByID(id);
             if (result == null) return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
             try
             {
-                SupplyDAO.Instance.Remove(id);
+                await SupplyDAO.Remove(id);
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
             }
             catch

@@ -8,23 +8,14 @@ using WebNC_Project.Models;
 
 namespace WebNC_Project.DAO
 {
-    public class PermissionDAO
+    public static class PermissionDAO
     {
-        private static readonly ResortContext db = new ResortContext();
-        private static PermissionDAO instance;
-        private PermissionDAO() { }
-        public static PermissionDAO Instance
+        public static async Task<IEnumerable<Permission>> GetAll()
         {
-            get
+            using(ResortContext db = new ResortContext())
             {
-                if (instance == null) instance = new PermissionDAO();
-                return instance;
+                return await db.Permissions.ToListAsync();
             }
-        }
-
-        public IEnumerable<Permission> GetAll()
-        {
-            return db.Permissions.ToList();
         }
     }
 }

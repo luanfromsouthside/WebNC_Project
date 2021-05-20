@@ -20,7 +20,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         public async Task<JsonResult> GetList()
         {
             List<ModelJson> src = new List<ModelJson>();
-            foreach(var item in await RoomTypeDAO.Instance.GetAll())
+            foreach(var item in await RoomTypeDAO.GetAll())
             {
                 src.Add(new ModelJson() { ID = item.ID, NameType = item.NameType, Count = item.Rooms.Count });
             }
@@ -39,13 +39,13 @@ namespace WebNC_Project.Areas.Server.Controllers
             try
             {
                 if (!ModelState.IsValid) return PartialView(model);
-                var enti = await RoomTypeDAO.Instance.GetByID(model.ID);
+                var enti = await RoomTypeDAO.GetByID(model.ID);
                 if (enti != null)
                 {
                     ModelState.AddModelError("ID", "ID was existed");
                     return PartialView(model);
                 }
-                RoomTypeDAO.Instance.Create(model);
+                await RoomTypeDAO.Create(model);
                 return Json(true, JsonRequestBehavior.AllowGet);
             }
             catch
@@ -57,7 +57,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         [HttpGet]
         public async Task<ActionResult> Edit(string id)
         {
-            var enti = await RoomTypeDAO.Instance.GetByID(id);
+            var enti = await RoomTypeDAO.GetByID(id);
             return PartialView(enti);
         }
 
@@ -67,13 +67,13 @@ namespace WebNC_Project.Areas.Server.Controllers
             try
             {
                 if (!ModelState.IsValid) return PartialView(model);
-                var enti = await RoomTypeDAO.Instance.GetByID(model.ID);
+                var enti = await RoomTypeDAO.GetByID(model.ID);
                 if(enti == null)
                 {
                     ModelState.AddModelError("", "Room type does not existed");
                     return PartialView(model);
                 }
-                RoomTypeDAO.Instance.Edit(model);
+                await RoomTypeDAO.Edit(model);
                 return Json(true, JsonRequestBehavior.AllowGet);
             }
             catch
@@ -87,9 +87,10 @@ namespace WebNC_Project.Areas.Server.Controllers
         {
             try
             {
-                var enti = await RoomTypeDAO.Instance.GetByID(id);
+                var enti = await RoomTypeDAO.GetByID(id);
                 if (enti == null) return Json("Not found room type with ID: " + id,JsonRequestBehavior.AllowGet);
-                await RoomTypeDAO.Instance.Remove(id);
+                if (enti.Rooms.Count() > 0) return Json("Can not remove this room type cause have room in this", JsonRequestBehavior.AllowGet);
+                await RoomTypeDAO.Remove(id);
                 return Json(true, JsonRequestBehavior.AllowGet);
             }
             catch

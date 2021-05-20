@@ -8,7 +8,7 @@ namespace WebNC_Project.Models
     public partial class ResortContext : DbContext
     {
         public ResortContext()
-            : base("name=ResortConnection")
+            : base("name=ResortContext")
         {
         }
 
@@ -34,7 +34,7 @@ namespace WebNC_Project.Models
 
             modelBuilder.Entity<RoomType>()
                 .HasMany(e => e.Rooms)
-                .WithOptional(e => e.RoomType)
+                .WithRequired(e => e.RoomType)
                 .HasForeignKey(e => e.TypeID);
         }
     }

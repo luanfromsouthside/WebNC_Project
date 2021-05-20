@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using WebNC_Project.DAO;
@@ -18,11 +19,11 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Index(LoginModel model)
+        public async Task<ActionResult> Index(LoginModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = StaffDAO.Instance.GetByID(model.Username);
+                var user = await StaffDAO.GetByID(model.Username);
                 if(user == null)
                 {
                     ModelState.AddModelError("", "User does not exist");

@@ -5,22 +5,23 @@ using System.Web;
 using System.Web.Mvc;
 using WebNC_Project.DAO;
 using WebNC_Project.Models;
+using System.Threading.Tasks;
 
 namespace WebNC_Project.Areas.Server.Controllers
 {
     public class ServicesController : Controller
     {
         // GET: Server/Services
-        public ActionResult Index(string search)
+        public async Task<ActionResult> Index(string search)
         {
             ViewBag.Search = search;
-            return View(ServiceDAO.Instance.GetAll());
+            return View(await ServiceDAO.GetAll());
         }
 
         // GET: Server/Services/Details/5
-        public ActionResult Details(string id)
+        public async Task<ActionResult> Details(string id)
         {
-            Service result = ServiceDAO.Instance.GetByID(id);
+            Service result = await ServiceDAO.GetByID(id);
             return View(result);
         }
 
@@ -34,19 +35,19 @@ namespace WebNC_Project.Areas.Server.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
-        public ActionResult Create(Service service)
+        public async Task<ActionResult> Create(Service service)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var entity = ServiceDAO.Instance.GetByID(service.ID);
+                    var entity = await ServiceDAO.GetByID(service.ID);
                     if (entity != null)
                     {
                         ModelState.AddModelError(service.ID, $"The services {service.ID} existed");
                         return View(service);
                     }
-                    ServiceDAO.Instance.Create(service);
+                    await ServiceDAO.Create(service);
                     return RedirectToAction("Index");
                 }
                 return View(service);
@@ -59,9 +60,9 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Services/Edit/5
-        public ActionResult Edit(string id)
+        public async Task<ActionResult> Edit(string id)
         {
-            Service service = ServiceDAO.Instance.GetByID(id);
+            Service service = await ServiceDAO.GetByID(id);
             return View(service);
         }
 
@@ -69,13 +70,13 @@ namespace WebNC_Project.Areas.Server.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
-        public ActionResult Edit(Service service)
+        public async Task<ActionResult> Edit(Service service)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    ServiceDAO.Instance.Edit(service);
+                    await ServiceDAO.Edit(service);
                     return RedirectToAction("Details", new { id = service.ID.Trim() });
                 }
                 return View(service);
@@ -90,13 +91,13 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         // POST: Server/Services/Delete/5
         [HttpPost]
-        public ActionResult Remove(string id)
+        public async Task<ActionResult> Remove(string id)
         {
-            var result = ServiceDAO.Instance.GetByID(id);
+            var result = await ServiceDAO.GetByID(id);
             if (result == null) return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
             try
             {
-                ServiceDAO.Instance.Remove(id);
+                await ServiceDAO.Remove(id);
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
             }
             catch

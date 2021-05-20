@@ -5,22 +5,23 @@ using System.Web;
 using System.Web.Mvc;
 using WebNC_Project.Models;
 using WebNC_Project.DAO;
+using System.Threading.Tasks;
 
 namespace WebNC_Project.Areas.Server.Controllers
 {
     public class VouchersController : Controller
     {
         // GET: Server/Vouchers
-        public ActionResult Index(string search)
+        public async Task<ActionResult> Index(string search)
         {
             ViewBag.Search = search;
-            return View(VoucherDAO.Instance.GetAll());
+            return View(await VoucherDAO.GetAll());
         }
 
         // GET: Server/Vouchers/Details/5
-        public ActionResult Details(string id)
+        public async Task<ActionResult> Details(string id)
         {
-            var result = VoucherDAO.Instance.GetByID(id);
+            var result = await VoucherDAO.GetByID(id);
             return View(result);
         }
 
@@ -32,7 +33,7 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         // POST: Server/Vouchers/Create
         [HttpPost]
-        public ActionResult Create(Voucher voucher)
+        public async Task<ActionResult> Create(Voucher voucher)
         {
             try
             {
@@ -48,13 +49,13 @@ namespace WebNC_Project.Areas.Server.Controllers
                         ModelState.AddModelError("FromDate", "The date begin of voucher cannot smaller than to day");
                         return View(voucher);
                     }
-                    var entity = VoucherDAO.Instance.GetByID(voucher.Code);
+                    var entity = await VoucherDAO.GetByID(voucher.Code);
                     if (entity != null)
                     {
                         ModelState.AddModelError("Code", "Code was exist, try again with new Code");
                         return View(voucher);
                     }
-                    VoucherDAO.Instance.Create(voucher);
+                    await VoucherDAO.Create(voucher);
                     return RedirectToAction("Index");
                 }
                 return View(voucher);
@@ -67,15 +68,15 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Vouchers/Edit/5
-        public ActionResult Edit(string id)
+        public async Task<ActionResult> Edit(string id)
         {
-            var result = VoucherDAO.Instance.GetByID(id);
+            var result = await VoucherDAO.GetByID(id);
             return View(result);
         }
 
         // POST: Server/Vouchers/Edit/5
         [HttpPost]
-        public ActionResult Edit(Voucher voucher)
+        public async Task<ActionResult> Edit(Voucher voucher)
         {
             try
             {
@@ -91,7 +92,7 @@ namespace WebNC_Project.Areas.Server.Controllers
                         ModelState.AddModelError("FromDate", "The date begin of voucher cannot smaller than to day");
                         return View(voucher);
                     }
-                    VoucherDAO.Instance.Edit(voucher);
+                    await VoucherDAO.Edit(voucher);
                     return RedirectToAction("Details", new { id = voucher.Code.Trim() });
                 }
                 return View(voucher);
@@ -106,13 +107,13 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         // POST: Server/Vouchers/Delete/5
         [HttpPost]
-        public ActionResult Remove(string id)
+        public async Task<ActionResult> Remove(string id)
         {
-            var result = VoucherDAO.Instance.GetByID(id);
+            var result = VoucherDAO.GetByID(id);
             if (result == null) return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
             try
             {
-                VoucherDAO.Instance.Remove(id);
+                await VoucherDAO.Remove(id);
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
             }
             catch
@@ -123,7 +124,7 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         private bool CheckDate(DateTime from, DateTime to)
         {
-            return from.Date > to.Date ? false : true;
+            return from.Date <= to.Date;
         }
     }
 }

@@ -3,66 +3,72 @@ using System.Collections.Generic;
 using System.Linq;
 using WebNC_Project.Models;
 using System.Web;
+using System.Threading.Tasks;
+using System.Data.Entity;
 
 namespace WebNC_Project.DAO
 {
-    public class SupplyDAO
+    public static class SupplyDAO
     {
-        private static readonly ResortContext db = new ResortContext();
-        private static SupplyDAO instance;
-        private SupplyDAO() { }
-        public static SupplyDAO Instance
+        public static async Task<IEnumerable<Supply>> GetAll()
         {
-            get
+            using(ResortContext db = new ResortContext())
             {
-                if (instance == null) instance = new SupplyDAO();
-                return instance;
+                return await db.Supplies.ToListAsync();
             }
         }
-        public IEnumerable<Supply> GetAll()
-        {
-            return db.Supplies.ToList();
-        }
 
-        public Supply GetByID(string id)
+        public static async Task<Supply> GetByID(string id)
         {
-            return db.Supplies.Find(id);
-        }
-
-        public int Create(Supply sup)
-        {
-            sup.ID = sup.ID.Trim().ToUpper();
-            db.Supplies.Add(sup);
-            return db.SaveChanges();
-        }
-
-        public int Remove(string id)
-        {
-            Supply sup = GetByID(id);
-            db.Supplies.Remove(sup);
-            return db.SaveChanges();
-        }
-
-        public int Edit(Supply sup, string editType, int? count)
-        {
-            Supply enti = db.Supplies.SingleOrDefault(s => s.ID == sup.ID);
-            if (enti != null)
+            using (ResortContext db = new ResortContext())
             {
-                switch (editType)
-                {
-                    case "newcount":
-                        enti.Total = (int)count;
-                        foreach (var item in db.SuppliesForRooms) db.SuppliesForRooms.Remove(item);
-                        break;
-                    case "addcount":
-                        enti.Total += (int)count;
-                        break;
-                    default: break;
-                }
-                enti.Name = sup.Name;
+                return await db.Supplies.FindAsync(id);
+            }
+        }
+
+        public static async Task<int> Create(Supply sup)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                sup.ID = sup.ID.Trim().ToUpper();
+                db.Supplies.Add(sup);
+                return await db.SaveChangesAsync();
+            }
+        }
+
+        public static async Task<int> Remove(string id)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                Supply sup = await db.Supplies.FindAsync(id);
+                db.Supplies.Remove(sup);
                 return db.SaveChanges();
             }
-            throw new Exception("Entity does not exist");
+        }
+
+        public static async Task<int> Edit(Supply sup, string editType, int? count)
+        {
+            using(ResortContext db = new ResortContext())
+            {
+                Supply enti = await db.Supplies.FindAsync(sup.ID);
+                if (enti != null)
+                {
+                    switch (editType)
+                    {
+                        case "newcount":
+                            enti.Total = (int)count;
+                            foreach (var item in db.SuppliesForRooms) db.SuppliesForRooms.Remove(item);
+                            break;
+                        case "addcount":
+                            enti.Total += (int)count;
+                            break;
+                        default: break;
+                    }
+                    enti.Name = sup.Name;
+                    return await db.SaveChangesAsync();
+                }
+                throw new Exception("Entity does not exist");
+            }
         }
     }
 }
