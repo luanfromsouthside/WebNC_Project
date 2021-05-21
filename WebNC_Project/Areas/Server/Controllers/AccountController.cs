@@ -34,9 +34,16 @@ namespace WebNC_Project.Areas.Server.Controllers
                     ModelState.AddModelError("", "Password incorrect");
                     return View(model);
                 }
-                return RedirectToAction("Index", "Staffs");
+                Session["UID"] = user.ID;
+                return RedirectToAction("Index", "Home");
             }
             return View(model);
+        }
+
+        public ActionResult SignOut()
+        {
+            Session["UID"] = string.Empty;
+            return RedirectToAction("Index");
         }
 
         public PartialViewResult UserInfo()

@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace WebNC_Project.Areas.Server.Controllers
 {
+    [ServerAuthentication]
     public class HomeController : Controller
     {
         private static string Bucket = "imageresort-e3879.appspot.com";
@@ -36,6 +37,11 @@ namespace WebNC_Project.Areas.Server.Controllers
                 return Content(await Upload(stream, editor1.FileName, path));
             }
             return Content("Nope");
+        }
+
+        public ActionResult UnAuthorized()
+        {
+            return View();
         }
 
         public async Task<string> Upload(FileStream stream, string fileName, string path)

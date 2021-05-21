@@ -17,7 +17,8 @@ namespace WebNC_Project.Areas.Server
             context.MapRoute(
                 "Server_default",
                 "Server/{controller}/{action}/{id}",
-                new { action = "Index", id = UrlParameter.Optional }
+                new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+                new string[] { "WebNC_Project.Areas.Server.Controllers" }
             );
         }
     }

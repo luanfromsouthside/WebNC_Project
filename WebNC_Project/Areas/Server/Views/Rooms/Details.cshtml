@@ -33,6 +33,15 @@
                             <td>@Html.DisplayNameFor(s => s.Adult) : @Model.Adult</td>
                             <td>@Html.DisplayNameFor(s => s.Child) : @Model.Child</td>
                         </tr>
+                        @if(Model.SuppliesForRooms.Count() > 0) { 
+                            <tr><td colspan="2">Vật tư cho phòng</td></tr>
+                            foreach(var supp in Model.SuppliesForRooms) { 
+                                <tr>
+                                    <td>@supp.Supply.Name</td>
+                                    <td>@supp.Count</td>
+                                </tr>
+                            }
+                        }
                     </tbody>
                 </table>
                 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">

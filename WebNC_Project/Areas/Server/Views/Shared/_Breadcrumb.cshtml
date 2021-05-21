@@ -5,6 +5,7 @@
     string iconctrl, iconaction;
     switch (controller)
     {
+        case "Rooms": iconctrl = "meeting_room"; break;
         case "Staffs": iconctrl = "badge"; break;
         case "Customers": iconctrl = "people"; break;
         case "Services": iconctrl = "room_service"; break;
@@ -18,6 +19,8 @@
         case "Create": iconaction = "add_circle"; break;
         case "Details": iconaction = "info"; break;
         case "Edit": iconaction = "edit"; break;
+        case "EditImg": iconaction = "image"; break;
+        case "EditInfo": iconaction = "announcement"; break;
         default: iconaction = "home"; break;
     }
 }

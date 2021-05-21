@@ -22,7 +22,7 @@ namespace WebNC_Project.DAO
         {
             using (ResortContext db = new ResortContext())
             {
-                return await db.Supplies.FindAsync(id);
+                return await db.Supplies.Include(s => s.SuppliesForRooms.Select(r => r.Room)).SingleOrDefaultAsync(s => s.ID == id);
             }
         }
 
@@ -50,7 +50,10 @@ namespace WebNC_Project.DAO
         {
             using(ResortContext db = new ResortContext())
             {
-                Supply enti = await db.Supplies.FindAsync(sup.ID);
+                Supply enti =
+                    await db.Supplies
+                    .Include(s => s.SuppliesForRooms)
+                    .SingleOrDefaultAsync(s => s.ID == sup.ID);
                 if (enti != null)
                 {
                     switch (editType)
@@ -68,6 +71,37 @@ namespace WebNC_Project.DAO
                     return await db.SaveChangesAsync();
                 }
                 throw new Exception("Entity does not exist");
+            }
+        }
+
+        public static async Task<int> GiveSupplyForRoom(string roomID, string supID, int count)
+        {
+            using(ResortContext db = new ResortContext())
+            {
+                SuppliesForRoom suppliesForRoom = new SuppliesForRoom()
+                {
+                    RoomID = roomID,
+                    SupplyID = supID,
+                    Count = count
+                };
+                Supply supply = await db.Supplies.FindAsync(supID);
+                supply.Total -= count;
+                db.SuppliesForRooms.Add(suppliesForRoom);
+                return await db.SaveChangesAsync();
+            }
+        }
+
+        public static async Task<int> TakeSupplyFromRoom(string roomID, string supID, int count)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                SuppliesForRoom suppliesForRoom =
+                    await db.SuppliesForRooms
+                    .SingleOrDefaultAsync(sr => sr.RoomID == roomID && sr.SupplyID == supID);
+                Supply supply = await db.Supplies.FindAsync(supID);
+                suppliesForRoom.Count -= count;
+                supply.Total += count;
+                return await db.SaveChangesAsync();
             }
         }
     }

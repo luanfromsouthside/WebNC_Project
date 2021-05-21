@@ -14,7 +14,10 @@ namespace WebNC_Project.DAO
         {
             using(ResortContext db = new ResortContext())
             {
-                return await db.Rooms.Include(r => r.RoomType).Include(r => r.Images).ToListAsync();
+                return await db.Rooms
+                    .Include(r => r.RoomType)
+                    .Include(r => r.Images)
+                    .Include(r => r.SuppliesForRooms.Select(s => s.Supply)).ToListAsync();
             }
         }
 
@@ -22,7 +25,10 @@ namespace WebNC_Project.DAO
         {
             using (ResortContext db = new ResortContext())
             {
-                return await db.Rooms.Include(r => r.RoomType).Include(r => r.Images).SingleOrDefaultAsync(r => r.ID == id);
+                return await db.Rooms
+                    .Include(r => r.RoomType)
+                    .Include(r => r.Images)
+                    .Include(r => r.SuppliesForRooms.Select(s => s.Supply)).SingleOrDefaultAsync(r => r.ID == id);
             }
         }
 
@@ -40,10 +46,20 @@ namespace WebNC_Project.DAO
         {
             using (ResortContext db = new ResortContext())
             {
-                Room room = await db.Rooms.Include(r => r.Images).SingleOrDefaultAsync(r => r.ID == id);
-                foreach(var img in room.Images.ToList())
+                //Room room = await db.Rooms.Include(r => r.Images).SingleOrDefaultAsync(r => r.ID == id);
+                Room room = await db.Rooms
+                    .Include(r => r.RoomType)
+                    .Include(r => r.Images)
+                    .Include(r => r.SuppliesForRooms.Select(s => s.Supply)).SingleOrDefaultAsync(r => r.ID == id);
+                foreach (var img in room.Images.ToList())
                 {
                     db.Images.Remove(img);
+                }
+                foreach(var s in room.SuppliesForRooms.ToList())
+                {
+                    Supply supply = await db.Supplies.FindAsync(s.SupplyID);
+                    supply.Total += s.Count;
+                    db.SuppliesForRooms.Remove(s);
                 }
                 db.Rooms.Remove(room);
                 return db.SaveChanges();

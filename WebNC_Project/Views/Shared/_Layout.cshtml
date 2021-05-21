@@ -1,42 +1,105 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8">
+    <meta name="description" content="Sona Template">
+    <meta name="keywords" content="Sona, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sona | Template</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cabin:400,500,600,700&display=swap" rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="~/resource/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="~/resource/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="~/resource/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="~/resource/css/flaticon.css" type="text/css">
+    <link rel="stylesheet" href="~/resource/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="~/resource/css/nice-select.css" type="text/css">
+    <link rel="stylesheet" href="~/resource/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="~/resource/css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="~/resource/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="~/resource/css/style.css" type="text/css">
+    @RenderSection("styles", required: false)
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    @Html.Partial("_Header")
+
+    <!-- Hero Section Begin -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="hero-text">
+                        <h1>Sona A Luxury Hotel</h1>
+                        <p>
+                            Here are the best hotel booking sites, including recommendations for international
+                            travel and for finding low-priced hotel rooms.
+                        </p>
+                        <a href="#" class="primary-btn">Discover Now</a>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-5 offset-xl-2 offset-lg-1">
+                    <div class="booking-form">
+                        <h3>Booking Your Hotel</h3>
+                        <form action="#">
+                            <div class="check-date">
+                                <label for="date-in">Check In:</label>
+                                <input type="text" class="date-input" id="date-in">
+                                <i class="icon_calendar"></i>
+                            </div>
+                            <div class="check-date">
+                                <label for="date-out">Check Out:</label>
+                                <input type="text" class="date-input" id="date-out">
+                                <i class="icon_calendar"></i>
+                            </div>
+                            <div class="select-option">
+                                <label for="adults">Adults</label>
+                                <select id="adults">
+                                    <option value="">2 Adults</option>
+                                    <option value="">3 Adults</option>
+                                </select>
+                            </div>
+                            <div class="select-option">
+                                <label for="child">Children:</label>
+                                <select id="child">
+                                    <option value="">1 Children</option>
+                                    <option value="">2 Children</option>
+                                </select>
+                            </div>
+                            <button type="submit">Check Availability</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-slider owl-carousel">
+            <div class="hs-item set-bg" data-setbg="/resource/img/hero/hero-1.jpg"></div>
+            <div class="hs-item set-bg" data-setbg="/resource/img/hero/hero-2.jpg"></div>
+            <div class="hs-item set-bg" data-setbg="/resource/img/hero/hero-3.jpg"></div>
+        </div>
+    </section>
+    <!-- Hero Section End -->
+
+    @RenderBody()
+
+    @Html.Partial("_Footer")
+    <!-- Js Plugins -->
+    <script src="~/resource/js/jquery-3.3.1.min.js"></script>
+    <script src="~/resource/js/bootstrap.min.js"></script>
+    <script src="~/resource/js/jquery.magnific-popup.min.js"></script>
+    <script src="~/resource/js/jquery.nice-select.min.js"></script>
+    <script src="~/resource/js/jquery-ui.min.js"></script>
+    <script src="~/resource/js/jquery.slicknav.js"></script>
+    <script src="~/resource/js/owl.carousel.min.js"></script>
+    <script src="~/resource/js/main.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

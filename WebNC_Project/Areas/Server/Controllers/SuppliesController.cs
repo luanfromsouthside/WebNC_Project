@@ -106,5 +106,86 @@ namespace WebNC_Project.Areas.Server.Controllers
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
             }
         }
+
+        public async Task<ActionResult> Distribution(string id) 
+        {
+            var enti = SupplyDAO.GetByID(id);
+            if (enti == null) return Json(false, JsonRequestBehavior.AllowGet);
+            ViewBag.Supply = id;
+            return View(await SuppliesForRoomDAO.GetRoomsOfSupply(id));
+        }
+
+        public async Task<SelectList> SetListRoom()
+        {
+            return new SelectList(await RoomDAO.GetAll(), "ID", "Name");
+        }
+
+        public async Task<ActionResult> GiveSpForRoom(string supID)
+        {
+            ViewBag.ListRoom = await SetListRoom();
+            return PartialView(new SuppliesForRoom() { SupplyID = supID });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> GiveSpForRoom(SuppliesForRoom model)
+        {
+            ViewBag.ListRoom = await SetListRoom();
+            if (!ModelState.IsValid) return PartialView(model);
+            Supply sup = await SupplyDAO.GetByID(model.SupplyID);
+            if(sup.Total < model.Count)
+            {
+                ModelState.AddModelError("Count", "Số lượng không khả dụng");
+                return PartialView(model);
+            }
+            if(sup == null)
+            {
+                ModelState.AddModelError("SupplyID", "Vật tư không tồn tại");
+                return PartialView(model);
+            }
+            if(await RoomDAO.GetByID(model.RoomID) == null)
+            {
+                ModelState.AddModelError("RoomID", "Phòng không tồn tại");
+                return PartialView(model);
+            }
+            try
+            {
+                await SuppliesForRoomDAO.GiveSPForRoom(model);
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public async Task<ActionResult> RemoveSpFromRoom(string roomID, string supID)
+        {
+            return PartialView(await SuppliesForRoomDAO.Single(roomID, supID));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> RemoveSpFromRoom(SuppliesForRoom model)
+        {
+            if (!ModelState.IsValid) return PartialView(model);
+            if (await SupplyDAO.GetByID(model.SupplyID) == null)
+            {
+                ModelState.AddModelError("SupplyID", "Vật tư không tồn tại");
+                return PartialView(model);
+            }
+            if (await RoomDAO.GetByID(model.RoomID) == null)
+            {
+                ModelState.AddModelError("RoomID", "Phòng không tồn tại");
+                return PartialView(model);
+            }
+            try
+            {
+                await SuppliesForRoomDAO.RemoveSPFromRoom(model);
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

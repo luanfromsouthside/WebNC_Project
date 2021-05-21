@@ -22,7 +22,7 @@ namespace WebNC_Project.DAO
         {
             using (ResortContext db = new ResortContext())
             {
-                return await db.Staffs.FindAsync(id);
+                return await db.Staffs.Include(s => s.Permission).SingleOrDefaultAsync(s => s.ID == id);
             }
         }
 

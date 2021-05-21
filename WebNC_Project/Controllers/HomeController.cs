@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -13,18 +14,28 @@ namespace WebNC_Project.Controllers
             return View();
         }
 
-        public ActionResult About()
+        [ChildActionOnly]
+        public async Task<ActionResult> DemoRoom()
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
+            return PartialView();
         }
 
-        public ActionResult Contact()
+        [ChildActionOnly]
+        public async Task<ActionResult> DemoService()
         {
-            ViewBag.Message = "Your contact page.";
+            return PartialView();
+        }
 
-            return View();
+        [ChildActionOnly]
+        public async Task<ActionResult> FeedBack()
+        {
+            return PartialView();
+        }
+
+        [ChildActionOnly]
+        public ActionResult About()
+        {
+            return PartialView();
         }
     }
 }
