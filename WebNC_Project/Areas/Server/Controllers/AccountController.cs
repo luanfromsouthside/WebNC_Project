@@ -26,12 +26,12 @@ namespace WebNC_Project.Areas.Server.Controllers
                 var user = await StaffDAO.GetByID(model.Username);
                 if(user == null)
                 {
-                    ModelState.AddModelError("", "User does not exist");
+                    ModelState.AddModelError("Username", "User does not exist");
                     return View(model);
                 }
                 if (user.Password != model.Password)
                 {
-                    ModelState.AddModelError("", "Password incorrect");
+                    ModelState.AddModelError("Password", "Password incorrect");
                     return View(model);
                 }
                 Session["UID"] = user.ID;

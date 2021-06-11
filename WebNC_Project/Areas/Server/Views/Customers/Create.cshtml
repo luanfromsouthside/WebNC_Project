@@ -13,7 +13,7 @@
         </h2>
     </div>
     <div class="body">
-        @using (Html.BeginForm())
+        @using (Html.BeginForm("Create","Customers",FormMethod.Post, new { @id = "submitFrm" }))
         {
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true)
@@ -53,6 +53,13 @@
                 </div>
                 @Html.ValidationMessageFor(s => s.Phone, "", new { @class = "text-danger" })
             </div>
+            @Html.LabelFor(s => s.Email)
+            <div class="form-group">
+                <div class="form-line">
+                    @Html.EditorFor(s => s.Email, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                @Html.ValidationMessageFor(s => s.Email, "", new { @class = "text-danger" })
+            </div>
             @Html.LabelFor(s => s.Password)
             <div class="form-group">
                 <div class="form-line">
@@ -60,7 +67,7 @@
                 </div>
                 @Html.ValidationMessageFor(s => s.Password, "", new { @class = "text-danger" })
             </div>
-            <button class="btn btn-primary waves-effect" type="submit">SUBMIT</button>
+            <button class="btn btn-primary waves-effect" type="submit" onclick="IsSubmit(this, event)">SUBMIT</button>
         }
     </div>
 </div>
@@ -71,6 +78,7 @@
         $(function () {
             $('#bs_datepicker_container input').datepicker({
                 autoclose: true,
+                format: 'dd/mm/yyyy',
                 container: '#bs_datepicker_container'
             });
         })

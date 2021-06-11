@@ -18,26 +18,48 @@
                 <h4>@Html.DisplayNameFor(s=>s.Code) : @Model.Code</h4>
             </div>
             <div class="panel-body">
-                <table class="table">
-                    <tbody class="font-18">
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.FromDate) </td>
-                            <td>@Model.FromDate.ToString("dd/MM/yyyy") </td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.ToDate) </td>
-                            <td>@Model.ToDate.ToString("dd/MM/yyyy")</td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.Discount) </td>
-                            <td>@Model.Discount %</td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.Condition) </td>
-                            <td>&GreaterEqual; @Model.Condition</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="list-group font-16">
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.DisplayNameFor(s => s.FromDate)
+                            </div>
+                            <div class="col-md-9">
+                                @Model.FromDate.ToString("dd/MM/yyyy")
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.DisplayNameFor(s => s.ToDate)
+                            </div>
+                            <div class="col-md-9">
+                                @Model.ToDate.ToString("dd/MM/yyyy")
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.DisplayNameFor(s => s.Discount)
+                            </div>
+                            <div class="col-md-9">
+                                @Model.Discount %
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.DisplayNameFor(s => s.Condition)
+                            </div>
+                            <div class="col-md-9">
+                                &GreaterEqual; @Model.Condition
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="panel-footer">
                 <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">

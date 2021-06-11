@@ -1222,6 +1222,11 @@ ul, ol {
 	background: #dfa974;
 	color: #ffffff;
 }
+
+.room-pagination a.active {
+	background: #dfa974;
+	color: #ffffff;
+}
 /*-----------------------
   Room Details Section
 -------------------------*/

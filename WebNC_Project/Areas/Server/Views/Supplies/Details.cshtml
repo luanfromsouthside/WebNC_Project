@@ -18,18 +18,28 @@
                 <h4>@Html.DisplayNameFor(s => s.ID) : @Model.ID</h4>
             </div>
             <div class="panel-body">
-                <table class="table">
-                    <tbody class="font-18">
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.Name) </td>
-                            <td>@Html.DisplayFor(s => s.Name) </td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.Total) </td>
-                            <td>@Html.DisplayFor(s => s.Total)</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="list-group font-16">
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.DisplayNameFor(s => s.Name)
+                            </div>
+                            <div class="col-md-9">
+                                @Model.Name
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.DisplayNameFor(s => s.Total)
+                            </div>
+                            <div class="col-md-9">
+                                @Model.Total
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="panel-footer">
                 <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
@@ -37,7 +47,7 @@
                         <i class="material-icons">edit</i>
                         <span>EDIT</span>
                     </a>
-                    <a href="@Url.Action("Distribution","Supplies", new { id = Model.ID.Trim() })" class="btn btn-primary waves-effect">
+                    <a href="@Url.Action("Distribution","Supplies", new { id = Model.ID.Trim() })" class="btn btn-info waves-effect">
                         <i class="material-icons">edit</i>
                         <span>DISTRIBUTION</span>
                     </a>

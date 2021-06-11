@@ -98,12 +98,13 @@
 	--------------------*/
     $(".date-input").datepicker({
         minDate: 0,
-        dateFormat: 'dd MM, yy'
+        dateFormat: 'dd/mm/yy'
     });
 
     /*------------------
 		Nice Select
 	--------------------*/
-    $("select").niceSelect();
+    $(".select-list").niceSelect();
+
 
 })(jQuery);

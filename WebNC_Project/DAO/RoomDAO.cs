@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -18,6 +19,18 @@ namespace WebNC_Project.DAO
                     .Include(r => r.RoomType)
                     .Include(r => r.Images)
                     .Include(r => r.SuppliesForRooms.Select(s => s.Supply)).ToListAsync();
+            }
+        }
+
+        public static async Task<IEnumerable<Room>> Search(string name)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                return await db.Rooms
+                    .Include(r => r.RoomType)
+                    .Include(r => r.Images)
+                    .Include(r => r.SuppliesForRooms.Select(s => s.Supply))
+                    .Where(r => r.Name.Contains(name)).ToListAsync();
             }
         }
 
@@ -83,6 +96,23 @@ namespace WebNC_Project.DAO
                     return await db.SaveChangesAsync();
                 }
                 throw new Exception("Entity does not exist");
+            }
+        }
+
+        [Obsolete]
+        public static async Task<bool> CheckRoom(string id, DateTime from, DateTime to, int invoice = 0)
+        {
+            using(ResortContext db = new ResortContext())
+            {
+                var list = await db.Rooms.Include(r => r.Bookings)
+                    .Where(r => r.Bookings.Any(b =>
+                    ((EntityFunctions.TruncateTime(b.CheckinDate) <= from.Date && from.Date <= EntityFunctions.TruncateTime(b.CheckoutDate)) ||
+                    (EntityFunctions.TruncateTime(b.CheckinDate) <= to.Date && to.Date <= EntityFunctions.TruncateTime(b.CheckoutDate))) &&
+                    (b.Status != "cancel") && (b.ID != invoice)))
+                    .Select(r => r.ID)
+                    .ToListAsync();
+                if (list.Contains(id)) return false;
+                return true;
             }
         }
     }

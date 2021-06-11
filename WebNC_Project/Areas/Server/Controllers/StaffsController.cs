@@ -17,36 +17,35 @@ namespace WebNC_Project.Areas.Server.Controllers
             ViewBag.Search = search;
             return View(await StaffDAO.GetAll());
         }
-        private async void SetListPermis()
+        private async Task<SelectList> SetListPermis()
         {
             SelectList listPer = new SelectList(await PermissionDAO.GetAll(), "ID", "Name");
-            ViewBag.ListPer = listPer;
+            return listPer;
         }
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            SetListPermis();
+            ViewBag.ListPer = await SetListPermis();
             return View(new Staff());
         }
 
         [HttpPost]
         public async Task<ActionResult> Create(Staff staff)
         {
+            ViewBag.ListPer = await SetListPermis();
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var entity = StaffDAO.GetByID(staff.ID);
+                    var entity = await StaffDAO.GetByID(staff.ID);
                     if (entity != null) return RedirectToAction("Create");
                     await StaffDAO.Create(staff);
                     return RedirectToAction("Index");
                 }
-                SetListPermis();
                 return View(staff);
             }            
             catch
             {
-                SetListPermis();
                 ModelState.AddModelError("", "Server can not create staff");
                 return View(staff);
             }
@@ -60,7 +59,7 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         public async Task<ActionResult> Edit(string id)
         {
-            SetListPermis();
+            ViewBag.ListPer = await SetListPermis();
             var result = await StaffDAO.GetByID(id);
             return View(result);
         }
@@ -68,7 +67,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         [HttpPost]
         public async Task<ActionResult> Edit(Staff staff)
         {
-            SetListPermis();
+            ViewBag.ListPer = await SetListPermis();
             try
             {
                 if (ModelState.IsValid)

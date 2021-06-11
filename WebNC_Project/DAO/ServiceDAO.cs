@@ -18,6 +18,14 @@ namespace WebNC_Project.DAO
             }
         }
 
+        public static async Task<IEnumerable<Service>> Search(string name)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                return await db.Services.Where(s => s.Name.Contains(name)).ToListAsync();
+            }
+        }
+
         public static async Task<Service> GetByID(string id)
         {
             using (ResortContext db = new ResortContext())

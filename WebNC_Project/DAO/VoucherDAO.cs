@@ -5,6 +5,7 @@ using System.Web;
 using WebNC_Project.Models;
 using System.Threading.Tasks;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 
 namespace WebNC_Project.DAO
 {
@@ -15,6 +16,28 @@ namespace WebNC_Project.DAO
             using(ResortContext db = new ResortContext())
             {
                 return await db.Vouchers.ToListAsync();
+            }
+        }
+
+        public static async Task<IEnumerable<Voucher>> GetAvailable()
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                var now = DateTime.Now;
+                return await db.Vouchers
+                    .Where(v => DbFunctions.TruncateTime(v.ToDate) >= now.Date)
+                    .ToListAsync();
+            }
+        }
+
+        public static async Task<IEnumerable<Voucher>> Search(string code)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                var now = DateTime.Now;
+                return await db.Vouchers
+                    .Where(v => DbFunctions.TruncateTime(v.ToDate) >= now.Date && v.Code.Contains(code))
+                    .ToListAsync();
             }
         }
 

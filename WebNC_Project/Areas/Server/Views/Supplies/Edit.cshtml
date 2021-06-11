@@ -19,7 +19,7 @@
         </h2>
     </div>
     <div class="body">
-        @using (Html.BeginForm())
+        @using (Html.BeginForm(null,null,FormMethod.Post, new { @id = "submitFrm" }))
         {
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true)
@@ -49,7 +49,7 @@
                     @Html.ValidationMessage("Count", "", new { @class = "text-danger" })
                 </div>
             </div>
-            <button class="btn btn-primary waves-effect" type="submit">Update</button>
+            <button class="btn btn-primary waves-effect" type="submit" onclick="IsSubmit(this, event)">Update</button>
         }
     </div>
 </div>

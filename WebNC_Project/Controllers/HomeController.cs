@@ -4,20 +4,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using WebNC_Project.DAO;
 
 namespace WebNC_Project.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
+            
             return View();
         }
 
-        [ChildActionOnly]
         public async Task<ActionResult> DemoRoom()
         {
-            return PartialView();
+            var result = await RoomDAO.GetAll();
+            return PartialView(result.Take(4));
         }
 
         [ChildActionOnly]
@@ -26,10 +28,11 @@ namespace WebNC_Project.Controllers
             return PartialView();
         }
 
-        [ChildActionOnly]
-        public async Task<ActionResult> FeedBack()
+
+        public async Task<PartialViewResult> DemoVoucher()
         {
-            return PartialView();
+            var vouchers = await VoucherDAO.GetAvailable();
+            return PartialView(vouchers.Take(4));
         }
 
         [ChildActionOnly]

@@ -40,7 +40,7 @@ namespace WebNC_Project.DAO
         {
             using (ResortContext db = new ResortContext())
             {
-                RoomType type = await GetByID(id);
+                RoomType type = await db.RoomTypes.FindAsync(id);
                 db.RoomTypes.Remove(type);
                 return await db.SaveChangesAsync();
             }

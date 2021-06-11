@@ -12,6 +12,7 @@
         public Customer()
         {
             Bookings = new HashSet<Booking>();
+            Birth = new DateTime(2000, 1, 1);
         }
 
         [MaxLength(20, ErrorMessage = "Username is contains at most 20 characters")]
@@ -35,15 +36,22 @@
         [Display(Name = "SĐT")]
         public string Phone { get; set; }
 
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
         [Display(Name = "Giới tính")]
         public bool Gender { get; set; }
 
         [MaxLength(20, ErrorMessage = "{0} contains at most 20 characters")]
         [MinLength(6, ErrorMessage = "{0} contains at least 6 characters")]
         [Required(ErrorMessage = "{0} is required")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Booking> Bookings { get; set; }
+
+        [NotMapped]
+        public string IDWithName { get { return Name + " : " + ID; } }
     }
 }

@@ -97,10 +97,10 @@ $.AdminBSB.leftSideBar = {
 
         //Set menu height
         _this.setMenuHeight(true);
-        //_this.checkStatusForResize(true);
+        _this.checkStatusForResize(true);
         $(window).resize(function () {
             _this.setMenuHeight(false);
-            //_this.checkStatusForResize(false);
+            _this.checkStatusForResize(false);
         });
 
         //Set Waves
@@ -467,3 +467,26 @@ $(function () {
 
     setTimeout(function () { $('.page-loader-wrapper').fadeOut(); }, 50);
 });
+
+//Form submit ==================================================
+function IsSubmit(ctl, event) {
+    event.preventDefault();
+    swal({
+        title: "Do you want to save it?",
+        text: "Check information before submit form!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Save",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false,
+        closeOnCancel: false
+    },
+        function (isConfirm) {
+            if (isConfirm) {
+                $("#submitFrm").submit();
+            } else {
+                swal("Cancelled", "You have cancelled form submit!", "error")
+            }
+        }
+    )
+}

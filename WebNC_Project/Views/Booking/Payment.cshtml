@@ -1,0 +1,41 @@
+﻿@model WebNC_Project.Models.Booking
+
+@{
+    ViewBag.Title = "Payment";
+}
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Thanh toán hóa đơn #@Model.ID</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    @using(Html.BeginForm("Payment","Booking",FormMethod.Post))
+    {
+        <article>
+            <p>Room: @Model.Room.Name</p>
+            <p>Check in: @Model.CheckinDate.ToString("dd/MM/yyyy")</p>
+            <p>Check out: @Model.CheckoutDate.ToString("dd/MM/yyyy")</p>
+            @if(Model.BookingServices.Count()>0)
+            {
+                <p>Dịch vụ sử dụng: </p>
+                foreach(var item in Model.BookingServices)
+                {
+                    <p>- Tên dịch vụ: @item.Service.Name</p>
+                }
+            }
+            @if(Model.Voucher != null) 
+            { 
+                <p>Discount voucher: @Model.Voucher.Discount %</p>
+            }
+            <p>Amount: @Math.Round(WebNC_Project.Models.Booking.GetPrice(Model)/23000.00,2)</p>
+        </article>
+        <script src="https://checkout.stripe.com/checkout.js"
+            data-key="pk_test_51J08eWItPwG3qPODYiIl6BfdFV2GdubPj6cYjvUJqSyFamWLkdAnc6Ynoe4siIdDiTLOMAgJh253Tk1Jyjg735gP00F2JYMAgJ"
+            class="stripe-button"
+            data-locale="auto"
+            data-description="Confirm payment"
+            data-amount="@(WebNC_Project.Models.Booking.GetPrice(Model)/23000.00 * 100)">
+        </script>
+    }
+</div>

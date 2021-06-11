@@ -12,6 +12,25 @@
                 <span>Home</span>
             </a>
         </li>
+        <!--Booking Menu-->
+        <li class="@(controller == "Bookings" ? "active" : "")">
+            <a href="javascript:void(0);" class="menu-toggle">
+                <i class="material-icons">receipt</i>
+                <span>Hóa đơn</span>
+            </a>
+            <ul class="ml-menu">
+                <li class="@(controller == "Bookings" && action == "Index" ? "active" : "")">
+                    <a href="@Url.Action("Index","Bookings")">
+                        <span>Danh sách hóa đơn</span>
+                    </a>
+                </li>
+                <li class="@(controller == "Bookings" && action == "Create" ? "active" : "")">
+                    <a href="@Url.Action("Create","Bookings")">
+                        <span>Đặt phòng</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
         <!--Room Menu-->
         <li class="@(controller == "Rooms" || controller == "RoomTypes" ? "active" : "")">
             <a href="javascript:void(0);" class="menu-toggle">

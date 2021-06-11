@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -58,9 +59,32 @@ namespace WebNC_Project.DAO
                     enti.Gender = customer.Gender;
                     enti.Password = customer.Password;
                     enti.Phone = customer.Phone;
+                    enti.Email = customer.Email;
                     return await db.SaveChangesAsync();
                 }
                 throw new Exception("Entity does not exist");
+            }
+        }
+
+        public static async Task<int> ChangePass(string id, string pass)
+        {
+            using(ResortContext db = new ResortContext())
+            {
+                Customer model = await db.Customers.FindAsync(id);
+                model.Password = pass;
+                return await db.SaveChangesAsync();
+            }
+        }
+
+        public static async Task<bool> CanBooking(string id)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                var invoices = await db.Bookings.Where(b => b.CustomerID == id).OrderByDescending(b => b.ID).FirstOrDefaultAsync();
+                if (invoices == null || invoices.Status == "cancel" || invoices.Status == "checkout") return true;
+                DateTime date = DateTime.Now;
+                if (invoices.Status == "payment" && invoices.CheckoutDate.Date < DateTime.Now.Date) return true;
+                return false;
             }
         }
     }

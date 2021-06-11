@@ -58,6 +58,9 @@
     <Reference Include="Firebase.Storage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FirebaseStorage.net.1.0.3\lib\netstandard1.1\Firebase.Storage.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -66,6 +69,15 @@
       <HintPath>..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Stripe.net, Version=39.53.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stripe.net.39.53.0\lib\net461\Stripe.net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -151,6 +163,9 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Extensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.Extensions.4.3.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
       <Private>True</Private>
@@ -192,6 +207,9 @@
       <HintPath>..\packages\System.Text.RegularExpressions.4.3.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -260,10 +278,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="App_Start\CustomerAuthen.cs" />
+    <Compile Include="App_Start\CustomerAuthentication.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Server\Controllers\AccountController.cs" />
+    <Compile Include="Areas\Server\Controllers\BookingsController.cs" />
     <Compile Include="Areas\Server\Controllers\CustomersController.cs" />
     <Compile Include="Areas\Server\Controllers\HomeController.cs" />
     <Compile Include="Areas\Server\Controllers\RoomsController.cs" />
@@ -275,6 +294,10 @@
     <Compile Include="Areas\Server\ServerAuthentication.cs" />
     <Compile Include="Areas\Server\ServerAuthorize.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BookingController.cs" />
+    <Compile Include="Controllers\RoomsController.cs" />
+    <Compile Include="Controllers\ServiceController.cs" />
+    <Compile Include="Controllers\VoucherController.cs" />
     <Compile Include="DAO\BookingDAO.cs" />
     <Compile Include="DAO\ImageDAO.cs" />
     <Compile Include="DAO\RoomDAO.cs" />
@@ -283,7 +306,21 @@
     <Compile Include="DAO\SupplyDAO.cs" />
     <Compile Include="DAO\SuppliesForRoomDAO.cs" />
     <Compile Include="DAO\VoucherDAO.cs" />
+    <Compile Include="Models\Booking.cs" />
+    <Compile Include="Models\BookingServices.cs" />
+    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Image.cs" />
+    <Compile Include="Models\Permission.cs" />
     <Compile Include="Models\ResortContext.cs" />
+    <Compile Include="Models\Room.cs" />
+    <Compile Include="Models\RoomType.cs" />
+    <Compile Include="Models\Rule.cs" />
+    <Compile Include="Models\Service.cs" />
+    <Compile Include="Models\Staff.cs" />
+    <Compile Include="Models\SuppliesForRoom.cs" />
+    <Compile Include="Models\Supply.cs" />
+    <Compile Include="Models\Voucher.cs" />
+    <Compile Include="ViewModel\HomePageViewModel.cs" />
     <Compile Include="ViewModel\LoginModel.cs" />
     <Compile Include="Areas\Server\ServerAreaRegistration.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -293,19 +330,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Booking.cs" />
-    <Compile Include="Models\Customer.cs" />
-    <Compile Include="Models\Image.cs" />
-    <Compile Include="Models\Permission.cs" />
-    <Compile Include="Models\Room.cs" />
-    <Compile Include="Models\RoomType.cs" />
-    <Compile Include="Models\Rule.cs" />
-    <Compile Include="Models\Service.cs" />
-    <Compile Include="Models\Staff.cs" />
-    <Compile Include="Models\SuppliesForRoom.cs" />
-    <Compile Include="Models\Supply.cs" />
-    <Compile Include="Models\Voucher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel\ResetPassModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Server\resources\css\materialize.css" />
@@ -1271,12 +1297,16 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\PagedList.css" />
+    <Content Include="resource\css\toastr.css" />
+    <Content Include="Content\toastr.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\ElegantIcons.svg" />
     <Content Include="fonts\Flaticon.svg" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="resource\css\bootstrap-multiselect.min.css" />
     <Content Include="resource\css\bootstrap.min.css" />
     <Content Include="resource\css\elegant-icons.css" />
     <Content Include="resource\css\flaticon.css" />
@@ -1342,6 +1372,7 @@
     <Content Include="resource\img\services\s-icon-1.png" />
     <Content Include="resource\img\testimonial-logo.png" />
     <Content Include="resource\img\video-bg.jpg" />
+    <Content Include="resource\js\bootstrap-multiselect.min.js" />
     <Content Include="resource\js\bootstrap.min.js" />
     <Content Include="resource\js\jquery-3.3.1.min.js" />
     <Content Include="resource\js\jquery-ui.min.js" />
@@ -1514,6 +1545,14 @@
     <Content Include="Areas\Server\Views\Home\UnAuthorized.cshtml" />
     <Content Include="Areas\Server\Views\Supplies\GiveSpForRoom.cshtml" />
     <Content Include="Areas\Server\Views\Supplies\RemoveSpFromRoom.cshtml" />
+    <Content Include="Areas\Server\Views\Bookings\Index.cshtml" />
+    <Content Include="Areas\Server\Views\Bookings\Details.cshtml" />
+    <Content Include="Areas\Server\Views\Bookings\Create.cshtml" />
+    <Content Include="Areas\Server\Views\Bookings\GetRoom.cshtml" />
+    <Content Include="Content\toastr.scss" />
+    <Content Include="Content\toastr.less" />
+    <Content Include="Areas\Server\Views\Bookings\Edit.cshtml" />
+    <Content Include="Areas\Server\Views\Bookings\CallServices.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -1525,6 +1564,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="resource\js\toastr.js" />
+    <Content Include="Scripts\toastr.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -1541,16 +1582,31 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\_Footer.cshtml" />
     <Content Include="Views\Shared\_Header.cshtml" />
-    <Content Include="Views\Home\DemoRoom.cshtml" />
     <Content Include="Views\Home\DemoService.cshtml" />
-    <Content Include="Views\Home\FeedBack.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Home\DemoRoom.cshtml" />
+    <Content Include="Views\Account\EditInfo.cshtml" />
+    <Content Include="Views\Rooms\Index.cshtml" />
+    <Content Include="Views\Account\EditPass.cshtml" />
+    <Content Include="Views\Rooms\Details.cshtml" />
+    <Content Include="Views\Home\DemoVoucher.cshtml" />
+    <Content Include="Views\Shared\_Menu.cshtml" />
+    <Content Include="Views\Service\Index.cshtml" />
+    <Content Include="Views\Service\Details.cshtml" />
+    <Content Include="Views\Voucher\Index.cshtml" />
+    <Content Include="Views\Booking\Create.cshtml" />
+    <Content Include="Views\Booking\Index.cshtml" />
+    <Content Include="Views\Booking\Edit.cshtml" />
+    <Content Include="Views\Booking\CallServices.cshtml" />
+    <Content Include="Views\Booking\Payment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Server\Data\" />
     <Folder Include="Areas\Server\ViewModel\" />
     <Folder Include="Content\img\" />
-    <Folder Include="Views\Account\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.min.css.map" />

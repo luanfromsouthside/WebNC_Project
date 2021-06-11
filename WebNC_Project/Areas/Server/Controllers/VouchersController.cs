@@ -124,7 +124,7 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         private bool CheckDate(DateTime from, DateTime to)
         {
-            return from.Date <= to.Date;
+            return from.CompareTo(to) == 1 ? true : false;
         }
     }
 }

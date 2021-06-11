@@ -26,7 +26,7 @@
                 </div>
             }
         </div>
-        @using (Html.BeginForm("EditImg", "Rooms", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("EditImg", "Rooms", FormMethod.Post, new { @enctype = "multipart/form-data", @id="submitFrm" }))
         {
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -39,7 +39,7 @@
                     </div>
                 </div>
             </div>
-            <button class="btn btn-primary waves-effect" type="submit">SUBMIT</button>
+            <button class="btn btn-primary waves-effect" type="submit" onclick="IsSubmit(this, event)">SUBMIT</button>
         }
     </div>
 </div>
@@ -73,7 +73,7 @@
                         if (res === true) {
                             swal("Remove success!");
                             setTimeout(function () {
-                                location.reload()
+                                location.href = "@Url.Action("EditImg")"
                             }, 1000);
                         }
                         else swal(res)

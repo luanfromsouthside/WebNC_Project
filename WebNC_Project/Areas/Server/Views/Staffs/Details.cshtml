@@ -18,35 +18,70 @@
                 <h4>Mã nhân viên : @Model.ID</h4>
             </div>
             <div class="panel-body">
-                <table class="table">
-                    <tbody class="font-18">
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.Name) </td>
-                            <td>@Html.DisplayFor(s => s.Name) </td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.Gender) </td>
-                            <td>@(Model.Gender ? "Name" : "Nữ")</td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.Birth) </td>
-                            <td>@Html.DisplayFor(s => s.Birth)</td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.Phone) </td>
-                            <td>@Html.DisplayFor(s => s.Phone)</td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.PermissionID) </td>
-                            <td>@Html.DisplayFor(s => s.Permission.Name)</td>
-                        </tr>
-                        <tr>
-                            <td>@Html.DisplayNameFor(s => s.Email) </td>
-                            <td>@Html.DisplayFor(s => s.Email)</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <div class="list-group font-16">
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.DisplayNameFor(s => s.Name)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.DisplayFor(s => s.Name)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.DisplayNameFor(s => s.Gender)
+                            </div>
+                            <div class="col-md-9">
+                                @(Model.Gender ? "Name" : "Nữ")
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.DisplayNameFor(s => s.Birth)
+                            </div>
+                            <div class="col-md-9">
+                                @Model.Birth.ToString("dd/MM/yyyy")
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.DisplayNameFor(s => s.PermissionID)
+                            </div>
+                            <div class="col-md-9">
+                                @Model.Permission.Name
+                            </div>
+                        </div>
+                    </div>
+
+                        <div class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    @Html.DisplayNameFor(s => s.Phone)
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.DisplayFor(s => s.Phone)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    @Html.DisplayNameFor(s => s.Email)
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.DisplayFor(s => s.Email)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             <div class="panel-footer">
                 <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
                     <a href="@Url.Action("Edit","Staffs", new { id = Model.ID.Trim() })" class="btn btn-primary waves-effect">

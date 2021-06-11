@@ -2,10 +2,62 @@
     ViewBag.Title = "Home Page";
 }
 
+<!-- Hero Section Begin -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="hero-text">
+                    <h1>NG-Resort A Luxury Resort</h1>
+                    <p>
+                        Here are the best hotel booking sites, including recommendations for international
+                        travel and for finding low-priced hotel rooms.
+                    </p>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-5 offset-xl-2 offset-lg-1">
+                <div class="booking-form">
+                    <h3>Booking Your Room</h3>
+                    <form action="#">
+                        <div class="check-date">
+                            <label for="date-in">Check In:</label>
+                            <input type="text" class="date-input" id="date-in">
+                            <i class="icon_calendar"></i>
+                        </div>
+                        <div class="check-date">
+                            <label for="date-out">Check Out:</label>
+                            <input type="text" class="date-input" id="date-out">
+                            <i class="icon_calendar"></i>
+                        </div>
+                        <button type="submit">Check Availability</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-slider owl-carousel">
+        <div class="hs-item set-bg" data-setbg="/resource/img/hero/hero-1.jpg"></div>
+        <div class="hs-item set-bg" data-setbg="/resource/img/hero/hero-2.jpg"></div>
+        <div class="hs-item set-bg" data-setbg="/resource/img/hero/hero-3.jpg"></div>
+    </div>
+</section>
+<!-- Hero Section End -->
+
 @Html.Partial("About")
 
-@Html.Partial("DemoService")
+<!--Demo Room-->
+<section class="hp-room-section">
+</section>
 
-@Html.Partial("DemoRoom")
+<!--Demo Voucher-->
+<section class="testimonial-section spad">
+</section>
 
-@Html.Partial("FeedBack")
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $(".testimonial-section").load('@Url.Action("DemoVoucher","Home")');
+            $(".hp-room-section").load('@Url.Action("DemoRoom","Home")');
+        })
+    </script>
+}

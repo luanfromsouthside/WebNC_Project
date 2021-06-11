@@ -13,7 +13,7 @@
         </h2>
     </div>
     <div class="body">
-        @using (Html.BeginForm())
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { @id="submitFrm" }))
         {
             @Html.HiddenFor(s => s.Code)
             @Html.AntiForgeryToken()
@@ -58,7 +58,7 @@
                     </div>
                 </div>
             </div>
-            <button class="btn btn-primary waves-effect" type="submit">Update</button>
+            <button class="btn btn-primary waves-effect" type="submit" onclick="IsSubmit(this, event)">Update</button>
         }
     </div>
 </div>
@@ -68,10 +68,14 @@
     <script>
         $(function () {
             $('.bs_datepicker_from input').datepicker({
-                container: '.bs_datepicker_from'
+                autoclose: true,
+                container: '.bs_datepicker_from',
+                format: 'dd/mm/yyyy' 
             });
             $('.bs_datepicker_to input').datepicker({
-                container: '.bs_datepicker_to'
+                autoclose: true,
+                container: '.bs_datepicker_to',
+                format: 'dd/mm/yyyy' 
             });
         })
     </script>

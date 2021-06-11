@@ -66,5 +66,14 @@
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SuppliesForRoom> SuppliesForRooms { get; set; }
+
+        [NotMapped]
+        public string Display
+        {
+            get
+            {
+                return $"{ID} : {Name}";
+            }
+        }
     }
 }

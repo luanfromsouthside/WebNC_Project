@@ -24,13 +24,19 @@ namespace WebNC_Project.Models
         public virtual DbSet<Supply> Supplies { get; set; }
         public virtual DbSet<SuppliesForRoom> SuppliesForRooms { get; set; }
         public virtual DbSet<Voucher> Vouchers { get; set; }
+        public virtual DbSet<BookingServices> BookingServices { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Booking>()
-                .HasMany(e => e.Services)
-                .WithMany(e => e.Bookings)
-                .Map(m => m.ToTable("BookingServices").MapLeftKey("BookingID").MapRightKey("ServiceID"));
+                .HasMany(e => e.BookingServices)
+                .WithRequired(e => e.Booking)
+                .HasForeignKey(e => e.BookingID);
+
+            modelBuilder.Entity<Service>()
+                .HasMany(e => e.BookingServices)
+                .WithRequired(e => e.Service)
+                .HasForeignKey(e => e.ServiceID);
 
             modelBuilder.Entity<RoomType>()
                 .HasMany(e => e.Rooms)
