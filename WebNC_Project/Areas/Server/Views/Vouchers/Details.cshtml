@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Thông tin Voucher";
+    string role = Session["Role"] as string;
 }
 @section styles {
     <link href="~/Areas/Server/resources/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
@@ -15,7 +16,7 @@
     <div class="body">
         <div class="panel panel-default panel-post">
             <div class="panel-heading">
-                <h4>@Html.DisplayNameFor(s=>s.Code) : @Model.Code</h4>
+                <h4>@Html.DisplayNameFor(s => s.Code) : @Model.Code</h4>
             </div>
             <div class="panel-body">
                 <div class="list-group font-16">
@@ -61,18 +62,21 @@
                     </div>
                 </div>
             </div>
-            <div class="panel-footer">
-                <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
-                    <a href="@Url.Action("Edit","Vouchers", new { id = Model.Code.Trim() })" class="btn btn-primary waves-effect">
-                        <i class="material-icons">edit</i>
-                        <span>EDIT</span>
-                    </a>
-                    <a href="javascript:void(0);" role="button" class="btn btn-danger waves-effect" id="btnRemove">
-                        <i class="material-icons">remove_circle</i>
-                        REMOVE
-                    </a>
+            @if (role == "MANAGER")
+            {
+                <div class="panel-footer">
+                    <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
+                        <a href="@Url.Action("Edit","Vouchers", new { id = Model.Code.Trim() })" class="btn btn-primary waves-effect">
+                            <i class="material-icons">edit</i>
+                            <span>EDIT</span>
+                        </a>
+                        <a href="javascript:void(0);" role="button" class="btn btn-danger waves-effect" id="btnRemove">
+                            <i class="material-icons">remove_circle</i>
+                            REMOVE
+                        </a>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
 </div>

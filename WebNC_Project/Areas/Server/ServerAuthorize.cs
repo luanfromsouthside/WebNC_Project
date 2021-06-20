@@ -19,8 +19,18 @@ namespace WebNC_Project.Areas.Server
         {
             bool authorize = false;
             var uid = Convert.ToString(httpContext.Session["UID"]);
+            var role = Convert.ToString(httpContext.Session["Role"]);
             if (!string.IsNullOrEmpty(uid))
-                using (var context = new ResortContext())
+            {
+                if (role == "MANAGER") return true;
+                foreach (var permission in allowedroles)
+                {
+                    if (permission == role) return true;
+                }
+
+            }
+            return authorize;
+                /*using (var context = new ResortContext())
                 {
                     var user = context.Staffs.Find(uid);
                     if (user.PermissionID == "MANAGER") return true;
@@ -28,8 +38,7 @@ namespace WebNC_Project.Areas.Server
                     {
                         if (role == user.PermissionID) return true;
                     }
-                }
-            return authorize;
+                }*/
         }
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)

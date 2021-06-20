@@ -10,9 +10,11 @@ using System.Threading.Tasks;
 
 namespace WebNC_Project.Areas.Server.Controllers
 {
+    [ServerAuthentication]
     public class CustomersController : Controller
     {
         // GET: Server/Customers
+        [ServerAuthorize("ADMIN", "STAFF")]
         public async Task<ActionResult> Index(string search)
         {
             ViewBag.Search = search;
@@ -20,6 +22,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Customers/Details/5
+        [ServerAuthorize("ADMIN", "STAFF")]
         public async Task<ActionResult> Details(string id)
         {
             Customer cus = await CustomerDAO.GetByID(id);
@@ -27,6 +30,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Customers/Create
+        [ServerAuthorize("ADMIN")]
         public ActionResult Create()
         {
             return View(new Customer());
@@ -35,6 +39,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         // POST: Server/Customers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ServerAuthorize("ADMIN")]
         public async Task<ActionResult> Create(Customer customer)
         {
             try
@@ -60,6 +65,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Customers/Edit/5
+        [ServerAuthorize("ADMIN")]
         public async Task<ActionResult> Edit(string id)
         {
             Customer cus = await CustomerDAO.GetByID(id);
@@ -68,6 +74,7 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         // POST: Server/Customers/Edit/5
         [HttpPost]
+        [ServerAuthorize("ADMIN")]
         public async Task<ActionResult> Edit(Customer customer)
         {
             try
@@ -89,6 +96,7 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         // POST: Server/Customers/Delete/5
         [HttpPost]
+        [ServerAuthorize("ADMIN")]
         public async Task<ActionResult> Remove(string id)
         {
             var result = await CustomerDAO.GetByID(id);

@@ -9,6 +9,7 @@ using WebNC_Project.Models;
 
 namespace WebNC_Project.Areas.Server.Controllers
 {
+    [ServerAuthentication, ServerAuthorize("ADMIN")]
     public class StaffsController : Controller
     {
         // GET: Server/Staffs

@@ -9,9 +9,11 @@ using System.Threading.Tasks;
 
 namespace WebNC_Project.Areas.Server.Controllers
 {
+    [ServerAuthentication]
     public class ServicesController : Controller
     {
         // GET: Server/Services
+        [ServerAuthorize("STAFF")]
         public async Task<ActionResult> Index(string search)
         {
             ViewBag.Search = search;
@@ -19,6 +21,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Services/Details/5
+        [ServerAuthorize("STAFF")]
         public async Task<ActionResult> Details(string id)
         {
             Service result = await ServiceDAO.GetByID(id);
@@ -26,6 +29,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Services/Create
+        [ServerAuthorize]
         public ActionResult Create()
         {
             return View(new Service());
@@ -35,6 +39,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
+        [ServerAuthorize]
         public async Task<ActionResult> Create(Service service)
         {
             try
@@ -60,6 +65,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Services/Edit/5
+        [ServerAuthorize]
         public async Task<ActionResult> Edit(string id)
         {
             Service service = await ServiceDAO.GetByID(id);
@@ -70,6 +76,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
+        [ServerAuthorize]
         public async Task<ActionResult> Edit(Service service)
         {
             try
@@ -91,6 +98,7 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         // POST: Server/Services/Delete/5
         [HttpPost]
+        [ServerAuthorize]
         public async Task<ActionResult> Remove(string id)
         {
             var result = await ServiceDAO.GetByID(id);

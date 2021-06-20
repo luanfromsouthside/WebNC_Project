@@ -154,25 +154,21 @@
             </div>
             <div class="panel-footer">
                 <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
-                    @if (Model.CheckoutDate.Date >= DateTime.Now.Date)
+                    @if (Model.CheckoutDate.Date >= DateTime.Now.Date && Model.Status != "cancel" && Model.Status != null)
                     {
                         <a onclick="Edit()" class="btn btn-primary waves-effect">
                             <i class="material-icons">edit</i>
                             <span>EDIT</span>
                         </a>
-                        <a onclick="CallSV()" class="btn btn-info waves-effect">
+                        <a onclick="CallSV()" class="btn btn-secondary waves-effect">
                             <i class="material-icons">edit</i>
                             <span>CALL SERVICES</span>
                         </a>
-
-                        if (Model.Status != "cancel") 
-                        {
-                            <a onclick="Accept('cancel')" class="btn btn-info waves-effect">
-                                <i class="material-icons">edit</i>
-                                <span>CALL SERVICES</span>
-                            </a>
-                        }
-                     }
+                        <a onclick="Accept('cancel')" class="btn btn-warning waves-effect">
+                            <i class="material-icons">remove_circle</i>
+                            <span>CANCEL</span>
+                        </a>
+                    }
                     @if (Model.Status.IsEmpty())
                     {
                         <a onclick="Remove()" role="button" class="btn btn-danger waves-effect" id="btnRemove">
@@ -260,7 +256,8 @@
                         title: "Add servicess",
                         text: "Success",
                         type: "success",
-                        closeOnConfirm: false
+                        closeOnConfirm: false,
+                        showCancelButton: true,
                     });
                     setTimeout(function () {
                         window.location.reload();
@@ -279,27 +276,41 @@
 
         function Accept(status) {
             var object = { id: @Model.ID, status: status }
-            $.post("@Url.Action("AcceptBill")", object, function (res) {
-                if (res == true) {
-                    swal({
-                        title: "Confirm servicess",
-                        text: "Success",
-                        type: "success",
-                        closeOnConfirm: false
-                    });
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 500);
+            swal({
+                title: "Are you sure?",
+                text: "When accept, you will not be able to recover this status bill!",
+                icon: "warning",
+                buttons: true,
+                showCancelButton: true,
+                dangerMode: true,
+            }, function(willDelete) {
+                if (willDelete) {
+                   $.post("@Url.Action("AcceptBill")", object, function (res) {
+                        if (res == true) {
+                            swal({
+                                title: "Confirm servicess",
+                                text: "Success",
+                                type: "success",
+                                closeOnConfirm: false
+                            });
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 500);
+                        }
+                        else {
+                            swal({
+                                title: "Confirm servicess",
+                                text: "Failed",
+                                type: "error",
+                                closeOnConfirm: false
+                            });
+                        }
+                    })
+                } else {
+                    swal("Your imaginary file is safe!");
                 }
-                else {
-                    swal({
-                        title: "Confirm servicess",
-                        text: "Failed",
-                        type: "error",
-                        closeOnConfirm: false
-                    });
-                }
-            })
+            });
+
         }
 
         function Remove() {
@@ -309,6 +320,7 @@
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
+                showCancelButton: true,
             }, function(willDelete) {
                 if (willDelete) {
                     $.post("@Url.Action("Remove")", { id: @Model.ID}, function (res) {

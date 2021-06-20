@@ -9,9 +9,11 @@ using System.Threading.Tasks;
 
 namespace WebNC_Project.Areas.Server.Controllers
 {
+    [ServerAuthentication]
     public class VouchersController : Controller
     {
         // GET: Server/Vouchers
+        [ServerAuthorize("STAFF")]
         public async Task<ActionResult> Index(string search)
         {
             ViewBag.Search = search;
@@ -19,6 +21,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Vouchers/Details/5
+        [ServerAuthorize("STAFF")]
         public async Task<ActionResult> Details(string id)
         {
             var result = await VoucherDAO.GetByID(id);
@@ -26,6 +29,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Vouchers/Create
+        [ServerAuthorize]
         public ActionResult Create()
         {
             return View(new Voucher());
@@ -33,6 +37,7 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         // POST: Server/Vouchers/Create
         [HttpPost]
+        [ServerAuthorize]
         public async Task<ActionResult> Create(Voucher voucher)
         {
             try
@@ -68,6 +73,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Vouchers/Edit/5
+        [ServerAuthorize]
         public async Task<ActionResult> Edit(string id)
         {
             var result = await VoucherDAO.GetByID(id);
@@ -76,6 +82,7 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         // POST: Server/Vouchers/Edit/5
         [HttpPost]
+        [ServerAuthorize]
         public async Task<ActionResult> Edit(Voucher voucher)
         {
             try
@@ -87,9 +94,12 @@ namespace WebNC_Project.Areas.Server.Controllers
                         ModelState.AddModelError("ToDate", "The date end of voucher was not valid");
                         return View(voucher);
                     }
-                    if(voucher.FromDate.Date <= DateTime.Today.Date)
+                    var enti = await VoucherDAO.GetByID(voucher.Code);
+                    DateTime min = DateTime.Now;
+                    if (enti.FromDate.Date < DateTime.Now.Date) min = enti.FromDate.Date;
+                    if(voucher.FromDate.Date < min.Date)
                     {
-                        ModelState.AddModelError("FromDate", "The date begin of voucher cannot smaller than to day");
+                        ModelState.AddModelError("FromDate", $"The date begin of voucher cannot smaller than {min.ToString("dd/MM/yyyy")}");
                         return View(voucher);
                     }
                     await VoucherDAO.Edit(voucher);
@@ -107,6 +117,7 @@ namespace WebNC_Project.Areas.Server.Controllers
 
         // POST: Server/Vouchers/Delete/5
         [HttpPost]
+        [ServerAuthorize]
         public async Task<ActionResult> Remove(string id)
         {
             var result = VoucherDAO.GetByID(id);

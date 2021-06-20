@@ -10,6 +10,7 @@ using System.Data.Entity;
 
 namespace WebNC_Project.Areas.Server.Controllers
 {
+    [ServerAuthentication,ServerAuthorize("WAREHOUSE")]
     public class SuppliesController : Controller
     {
         // GET: Server/Supplies

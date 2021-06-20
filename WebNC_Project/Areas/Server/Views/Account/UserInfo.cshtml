@@ -1,13 +1,16 @@
-﻿<!-- User Info -->
+﻿@{
+    string name = Session["Name"] as string;
+    string role = Session["RoleName"] as string;
+}
+
+<!-- User Info -->
 <div class="user-info">
     <div class="info-container">
-        <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Thanh Luan</div>
-        <div class="email">justin.henry.gd@gmail.com</div>
+        <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@name</div>
+        <div class="email">Chức vụ: @role</div>
         <div class="btn-group user-helper-dropdown">
             <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
             <ul class="dropdown-menu pull-right">
-                <li><a href="javascript:void(0);"><i class="material-icons">person</i>Edit Information</a></li>
-                <li role="separator" class="divider"></li>
                 <li><a href="@Url.Action("SignOut")"><i class="material-icons">input</i>Sign Out</a></li>
             </ul>
         </div>

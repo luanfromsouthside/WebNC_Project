@@ -10,9 +10,11 @@ using System.IO;
 
 namespace WebNC_Project.Areas.Server.Controllers
 {
+    [ServerAuthentication]
     public class RoomsController : Controller
     {
         // GET: Server/Rooms
+        [ServerAuthorize("WAREHOUSE", "STAFF")]
         public async Task<ActionResult> Index(string search)
         {
             ViewBag.Search = search;
@@ -20,6 +22,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Rooms/Details/5
+        [ServerAuthorize("WAREHOUSE", "STAFF")]
         public async Task<ActionResult> Details(string id)
         {
             var result = await RoomDAO.GetByID(id);
@@ -27,6 +30,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         // GET: Server/Rooms/Create/5
+        [ServerAuthorize]
         public async Task<ActionResult> Create()
         {
             ViewBag.ListType = await SetListType();
@@ -34,6 +38,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         [HttpPost]
+        [ServerAuthorize]
         public async Task<ActionResult> Create(Room model, IEnumerable<HttpPostedFileBase> listimg)
         {
             ViewBag.ListType = await SetListType();
@@ -66,6 +71,7 @@ namespace WebNC_Project.Areas.Server.Controllers
             }
         }
 
+        [ServerAuthorize]
         public async Task<ActionResult> EditInfo(string id)
         {
             ViewBag.ListType = await SetListType();
@@ -73,6 +79,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         [HttpPost]
+        [ServerAuthorize]
         public async Task<ActionResult> EditInfo(Room model)
         {
             if (await RoomDAO.GetByID(model.ID) == null) return HttpNotFound();
@@ -94,6 +101,7 @@ namespace WebNC_Project.Areas.Server.Controllers
             return View(model);
         }
 
+        [ServerAuthorize]
         public async Task<ActionResult> EditImg(string id)
         {
             ViewBag.IDRoom = id;
@@ -101,6 +109,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         [HttpPost]
+        [ServerAuthorize]
         public async Task<ActionResult> EditImg(string ID, IEnumerable<HttpPostedFileBase> addnew)
         {
             var room = await RoomDAO.GetByID(ID);
@@ -138,6 +147,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         } 
 
         [HttpPost]
+        [ServerAuthorize]
         public async Task<ActionResult> Remove(string id)
         {
             try
@@ -154,6 +164,7 @@ namespace WebNC_Project.Areas.Server.Controllers
         }
 
         [HttpPost]
+        [ServerAuthorize]
         public async Task<ActionResult> RemoveImg(string url)
         {
             try

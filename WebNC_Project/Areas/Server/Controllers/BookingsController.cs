@@ -9,11 +9,13 @@ using WebNC_Project.Models;
 
 namespace WebNC_Project.Areas.Server.Controllers
 {
+    [ServerAuthentication,ServerAuthorize("MANAGER", "STAFF")]
     public class BookingsController : Controller
     {
         // GET: Server/Bookings
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string search)
         {
+            ViewBag.Search = search;
             return View(await BookingDAO.GetAll());
         }
 

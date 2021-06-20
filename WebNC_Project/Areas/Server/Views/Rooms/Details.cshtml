@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Thông tin phòng ";
+    string role = Session["Role"] as string;
 }
 
 @section styles {
@@ -60,23 +61,25 @@
                             </div>
                         </div>
                     </div>
-                @if (Model.SuppliesForRooms.Count() > 0) { 
-                    <h5 class="m-l-10">Vật tư sử dụng</h5>
-                    <div class="list-group">
-                        @foreach(var item in Model.SuppliesForRooms) { 
-                            <div class="list-group-item">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        @item.Supply.Name
-                                    </div>
-                                    <div class="col-md-3">
-                                        @item.Count
+                    @if (Model.SuppliesForRooms.Count() > 0)
+                    {
+                        <h5 class="m-l-10">Vật tư sử dụng</h5>
+                        <div class="list-group">
+                            @foreach (var item in Model.SuppliesForRooms)
+                            {
+                                <div class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            @item.Supply.Name
+                                        </div>
+                                        <div class="col-md-3">
+                                            @item.Count
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
-                    </div>
-                }
+                            }
+                        </div>
+                    }
                 </div>
                 @if (Model.Images.Count() > 0)
                 {
@@ -106,22 +109,25 @@
                     </div>
                 }
             </div>
-            <div class="panel-footer">
-                <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
-                    <a href="@Url.Action("EditInfo","Rooms", new { id = Model.ID.Trim() })" class="btn btn-primary waves-effect">
-                        <i class="material-icons">edit</i>
-                        <span>EDIT INFO</span>
-                    </a>
-                    <a href="@Url.Action("EditImg","Rooms", new { id = Model.ID.Trim() })" class="btn btn-toolbar waves-effect">
-                        <i class="material-icons">image</i>
-                        <span>EDIT IMAGE</span>
-                    </a>
-                    <a href="javascript:void(0);" role="button" class="btn btn-danger waves-effect" id="btnRemove">
-                        <i class="material-icons">remove_circle</i>
-                        <span>REMOVE</span>
-                    </a>
+            @if (role == "MANAGER")
+            {
+                <div class="panel-footer">
+                    <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
+                        <a href="@Url.Action("EditInfo","Rooms", new { id = Model.ID.Trim() })" class="btn btn-primary waves-effect">
+                            <i class="material-icons">edit</i>
+                            <span>EDIT INFO</span>
+                        </a>
+                        <a href="@Url.Action("EditImg","Rooms", new { id = Model.ID.Trim() })" class="btn btn-toolbar waves-effect">
+                            <i class="material-icons">image</i>
+                            <span>EDIT IMAGE</span>
+                        </a>
+                        <a href="javascript:void(0);" role="button" class="btn btn-danger waves-effect" id="btnRemove">
+                            <i class="material-icons">remove_circle</i>
+                            <span>REMOVE</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
 </div>

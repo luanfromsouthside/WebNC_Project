@@ -9,11 +9,13 @@ using System.Threading.Tasks;
 
 namespace WebNC_Project.Areas.Server.Controllers
 {
+    [ServerAuthentication, ServerAuthorize]
     public class RoomTypesController : Controller
     {
         // GET: Server/RoomTypes
-        public ActionResult Index()
+        public ActionResult Index(string search)
         {
+            ViewBag.Search = search;
             return View(new RoomType());
         }
 
