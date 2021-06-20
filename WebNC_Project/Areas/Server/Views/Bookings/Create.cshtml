@@ -61,6 +61,13 @@
                 </div>
                 @Html.ValidationMessageFor(m => m.Child, "", new { @class = "text-danger" })
             </div>
+            @Html.LabelFor(m => m.VoucherCode)
+            <div class="form-group">
+                <div class="form-line">
+                    @Html.EditorFor(m => m.VoucherCode, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                @Html.ValidationMessageFor(m => m.VoucherCode, "", new { @class = "text-danger" })
+            </div>
             <button class="btn btn-primary waves-effect" type="submit" onclick="IsSubmit(this, event)">SUBMIT</button>
         }
     </div>

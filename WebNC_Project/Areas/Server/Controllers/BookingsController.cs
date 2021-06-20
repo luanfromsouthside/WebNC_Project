@@ -26,6 +26,7 @@ namespace WebNC_Project.Areas.Server.Controllers
             return View(result);
         }
 
+        [Obsolete]
         public async Task<List<SelectListItem>> GetCustomer()
         {
             var list = await BookingDAO.GetCustomerAvailable();
@@ -39,6 +40,7 @@ namespace WebNC_Project.Areas.Server.Controllers
             return new SelectList(await RoomDAO.GetAll(), "ID", "Display");
         }
 
+        [Obsolete]
         public async Task<ActionResult> Create()
         {
             ViewBag.ListCus = await GetCustomer();
@@ -64,7 +66,7 @@ namespace WebNC_Project.Areas.Server.Controllers
             }
             if (model.CheckinDate.Date >= model.CheckoutDate.Date)
             {
-                ModelState.AddModelError("CheckinDate", "Check in date must greater than check out date");
+                ModelState.AddModelError("CheckinDate", "Check in date must smaller than check out date");
                 return View(model);
             }
             if (!(await RoomDAO.CheckRoom(model.RoomID, model.CheckinDate, model.CheckoutDate)))
@@ -83,6 +85,38 @@ namespace WebNC_Project.Areas.Server.Controllers
                 ModelState.AddModelError("Child", $"Max child of room {model.RoomID} is {room.Child}");
                 return View(model);
             }
+            string validCheckIn = Booking.ValidCheckin(model.CheckinDate, DateTime.Now);
+            if (validCheckIn != null)
+            {
+                ModelState.AddModelError("CheckinDate", validCheckIn);
+                return View(model);
+            }
+            if (model.ValidCheckout != null)
+            {
+                ModelState.AddModelError("CheckoutDate", model.ValidCheckout);
+                return View(model);
+            }
+            if (model.VoucherCode != null)
+            {
+                var voucher = await VoucherDAO.GetByID(model.VoucherCode);
+                if (voucher == null)
+                {
+                    ModelState.AddModelError("VoucherCode", $"Voucher {model.VoucherCode} does not existed");
+                    return View(model);
+                }
+                if (!(voucher.FromDate.Date <= model.CheckinDate.Date && model.CheckinDate.Date <= voucher.ToDate.Date) &&
+                !(voucher.FromDate.Date <= model.CheckoutDate.Date && model.CheckoutDate.Date <= voucher.ToDate.Date))
+                {
+                    ModelState.AddModelError("VoucherCode", $"Voucher {voucher.Code} can apply for bill booking between {voucher.FromDate.ToString("dd/MM/yyyyy")} and {voucher.ToDate.ToString("dd/MM/yyyyy")}");
+                    return View(model);
+                }
+                model.Room = await RoomDAO.GetByID(model.RoomID);
+                if (Booking.GetPrice(model,false) < voucher.Condition)
+                {
+                    ModelState.AddModelError("VoucherCode", $"Voucher {voucher.Code} can apply for bill with value equal or bigger than {voucher.Condition} VND");
+                    return View(model);
+                }
+            }
             try
             {
                 await BookingDAO.Create(model);
@@ -95,6 +129,7 @@ namespace WebNC_Project.Areas.Server.Controllers
             }
         }
 
+        [Obsolete]
         public async Task<ActionResult> Edit(int id)
         {
             var result = await BookingDAO.GetByID(id);
@@ -123,7 +158,7 @@ namespace WebNC_Project.Areas.Server.Controllers
             }
             if (model.CheckinDate.Date >= model.CheckoutDate.Date)
             {
-                ModelState.AddModelError("CheckinDate", "Check in date must greater than check out date");
+                ModelState.AddModelError("CheckinDate", "Check in date must smaller than check out date");
                 return PartialView(model);
             }
             var room = await RoomDAO.GetByID(model.RoomID);
@@ -136,6 +171,40 @@ namespace WebNC_Project.Areas.Server.Controllers
             {
                 ModelState.AddModelError("Child", $"Max child of room {model.RoomID} is {room.Child}");
                 return PartialView(model);
+            }
+            string validCheckIn = Booking.ValidCheckin(model.CheckinDate, model.CheckinDate);
+            if (validCheckIn != null)
+            {
+                ModelState.AddModelError("CheckinDate", validCheckIn);
+                return PartialView(model);
+            }
+            if (model.ValidCheckout != null)
+            {
+                ModelState.AddModelError("CheckoutDate", model.ValidCheckout);
+                return PartialView(model);
+            }
+            if (model.VoucherCode != null)
+            {
+                var voucher = await VoucherDAO.GetByID(model.VoucherCode);
+                if(voucher == null)
+                {
+                    ModelState.AddModelError("VoucherCode", $"Voucher {model.VoucherCode} does not existed");
+                    return PartialView(model);
+                }
+                if (!(voucher.FromDate.Date <= model.CheckinDate.Date && model.CheckinDate.Date <= voucher.ToDate.Date) &&
+                !(voucher.FromDate.Date <= model.CheckoutDate.Date && model.CheckoutDate.Date <= voucher.ToDate.Date))
+                {
+                    ModelState.AddModelError("VoucherCode", $"Voucher {voucher.Code} can apply for bill booking between {voucher.FromDate.ToString("dd/MM/yyyyy")} and {voucher.ToDate.ToString("dd/MM/yyyyy")}");
+                    return PartialView(model);
+                }
+                var bill = await BookingDAO.GetByID(model.ID);
+                model.Room = bill.Room;
+                model.BookingServices = bill.BookingServices;
+                if (Booking.GetPrice(model, false) < voucher.Condition)
+                {
+                    ModelState.AddModelError("VoucherCode", $"Voucher {voucher.Code} can apply for bill with value equal or bigger than {voucher.Condition} VND");
+                    return PartialView(model);
+                }
             }
             try
             {
@@ -193,8 +262,9 @@ namespace WebNC_Project.Areas.Server.Controllers
                 await BookingDAO.CheckBooking(id, status);
                 return Json(true, JsonRequestBehavior.AllowGet);
             }
-            catch
+            catch (Exception ex)
             {
+                var e = ex;
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
         }

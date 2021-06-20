@@ -47,6 +47,7 @@
         [MaxLength(20, ErrorMessage = "{0} contains at most 20 characters")]
         [MinLength(6, ErrorMessage = "{0} contains at least 6 characters")]
         [Required(ErrorMessage = "{0} is required")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [StringLength(50)]

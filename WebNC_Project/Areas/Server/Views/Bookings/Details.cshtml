@@ -24,19 +24,19 @@
                     {
                         <li><a onclick="Accept('confirm')">Xác nhận hóa đơn</a></li>
                     }
-
-                    
                     @if (Model.Status != "payment" && Model.Status != "cancel")
                     {
-                        <li><a onclick="Accept('payment')">Xác nhận thanh toán</a></li>
-
-                        if (Model.CheckinDate.Date == DateTime.Now.Date)
+                        if (Model.CheckinDate.Date <= DateTime.Now.Date && Model.Status == "confirm")
                         {
                             <li><a onclick="Accept('checkin')">Xác nhận check in</a></li>
                         }
-                        if (Model.CheckoutDate.Date == DateTime.Now.Date)
+                        if (Model.CheckoutDate.Date <= DateTime.Now.Date && Model.Status == "checkin")
                         {
                             <li><a onclick="Accept('checkout')">Xác nhận check out</a></li>
+                        }
+                        if (Model.Status == "checkout")
+                        {
+                            <li><a onclick="Accept('payment')">Xác nhận thanh toán</a></li>
                         }
                     }
                 </ul>
@@ -154,7 +154,7 @@
             </div>
             <div class="panel-footer">
                 <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
-                    @if(Model.CheckoutDate.Date >= DateTime.Now.Date)
+                    @if (Model.CheckoutDate.Date >= DateTime.Now.Date)
                     {
                         <a onclick="Edit()" class="btn btn-primary waves-effect">
                             <i class="material-icons">edit</i>
@@ -164,8 +164,16 @@
                             <i class="material-icons">edit</i>
                             <span>CALL SERVICES</span>
                         </a>
-                    }
-                    @if(Model.Status.IsEmpty() || Model.Status == "confirm") 
+
+                        if (Model.Status != "cancel") 
+                        {
+                            <a onclick="Accept('cancel')" class="btn btn-info waves-effect">
+                                <i class="material-icons">edit</i>
+                                <span>CALL SERVICES</span>
+                            </a>
+                        }
+                     }
+                    @if (Model.Status.IsEmpty())
                     {
                         <a onclick="Remove()" role="button" class="btn btn-danger waves-effect" id="btnRemove">
                             <i class="material-icons">remove_circle</i>
@@ -301,34 +309,33 @@
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
-            })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        $.post("Remove", @Model.ID, function (res) {
-                            if (res == true) {
-                                swal("Poof! Your bill has been deleted!", {
-                                    icon: "success",
-                                });
-                                setTimeout(function () {
-                                    window.location.reload();
-                                }, 500);
-                            }
-                            else {
-                                swal({
-                                    title: "Remove booking bill",
-                                    text: "Failed",
-                                    type: "error",
-                                    closeOnConfirm: false
-                                });
-                            }
-                        })
-                        swal("Poof! Your bill has been deleted!", {
-                            icon: "success",
-                        });
-                    } else {
-                        swal("Your imaginary file is safe!");
-                    }
-                });
+            }, function(willDelete) {
+                if (willDelete) {
+                    $.post("@Url.Action("Remove")", { id: @Model.ID}, function (res) {
+                        if (res == true) {
+                            swal("Poof! Your bill has been deleted!", {
+                                icon: "success",
+                            });
+                            setTimeout(function () {
+                                window.location.href = "@Url.Action("Index")"
+                            }, 500);
+                        }
+                        else {
+                            swal({
+                                title: "Remove booking bill",
+                                text: "Failed",
+                                type: "error",
+                                closeOnConfirm: false
+                            });
+                        }
+                    })
+                    swal("Poof! Your bill has been deleted!", {
+                        icon: "success",
+                    });
+                } else {
+                    swal("Your imaginary file is safe!");
+                }
+            });
         }
     </script>
 }

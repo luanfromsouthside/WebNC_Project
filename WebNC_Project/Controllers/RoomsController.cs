@@ -14,14 +14,22 @@ namespace WebNC_Project.Controllers
     public class RoomsController : Controller
     {
         // GET: Rooms
-        public async Task<ActionResult> Index(int? page, string search)
+        [Obsolete]
+        public async Task<ActionResult> Index(int? page, string search, DateTime? datein, DateTime? dateout)
         {
             int pageSize = 6;
             int pageNum = (page ?? 1);
             IEnumerable<Room> result;
-            if(search != null)
+            if(search != null || datein.HasValue && dateout.HasValue)
             {
-                result = await RoomDAO.Search(search);
+                if(search != null)
+                {
+                    result = await RoomDAO.Search(search);
+                }
+                else
+                {
+                    result = await RoomDAO.GetRoomAvailable(datein.Value, dateout.Value);
+                }
             }
             else
             {

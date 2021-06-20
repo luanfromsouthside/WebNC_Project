@@ -9,6 +9,8 @@ using WebNC_Project.Models;
 using WebNC_Project.DAO;
 using WebNC_Project.App_Start;
 using Stripe.Checkout;
+using Stripe;
+using WebNC_Project.ViewModel;
 
 namespace WebNC_Project.Controllers
 {
@@ -16,19 +18,8 @@ namespace WebNC_Project.Controllers
     public class BookingController : Controller
     {
         // GET: Booking
-        public async Task<ActionResult> Index(bool? payment, int? id)
+        public async Task<ActionResult> Index()
         {
-            if(payment.HasValue)
-            {
-                ViewBag.Stt = true;
-                ViewBag.Msg = "Payment success invoice #" + id.Value;
-            }
-            if (!payment.HasValue)
-            {
-                ViewBag.Stt = false;
-                ViewBag.Msg = "Failed to payment";
-            }
-            ViewBag.API = "pk_test_51J08eWItPwG3qPODYiIl6BfdFV2GdubPj6cYjvUJqSyFamWLkdAnc6Ynoe4siIdDiTLOMAgJh253Tk1Jyjg735gP00F2JYMAgJ";
             var result = await BookingDAO.BookingsOfCustomer((string)Session["Customer"]);
             return View(result);
         }
@@ -60,7 +51,7 @@ namespace WebNC_Project.Controllers
             }
             if(model.CheckinDate.Date >= model.CheckoutDate.Date)
             {
-                ModelState.AddModelError("CheckinDate", "Check in date must greater than check out date");
+                ModelState.AddModelError("CheckinDate", "Check in date must smaller than check out date");
                 return View(model);
             }
             if(!(await RoomDAO.CheckRoom(model.RoomID, model.CheckinDate, model.CheckoutDate)))
@@ -78,6 +69,38 @@ namespace WebNC_Project.Controllers
             {
                 ModelState.AddModelError("Child", $"Max child of room {model.RoomID} is {room.Child}");
                 return View(model);
+            }
+            string validCheckIn = Booking.ValidCheckin(model.CheckinDate, DateTime.Now);
+            if (validCheckIn != null)
+            {
+                ModelState.AddModelError("CheckinDate", validCheckIn);
+                return View(model);
+            }
+            if (model.ValidCheckout != null)
+            {
+                ModelState.AddModelError("CheckoutDate", model.ValidCheckout);
+                return View(model);
+            }
+            if (model.VoucherCode != null)
+            {
+                var voucher = await VoucherDAO.GetByID(model.VoucherCode);
+                if (voucher == null)
+                {
+                    ModelState.AddModelError("VoucherCode", $"Voucher {model.VoucherCode} does not existed");
+                    return View(model);
+                }
+                if (!(voucher.FromDate.Date <= model.CheckinDate.Date && model.CheckinDate.Date <= voucher.ToDate.Date) &&
+                !(voucher.FromDate.Date <= model.CheckoutDate.Date && model.CheckoutDate.Date <= voucher.ToDate.Date))
+                {
+                    ModelState.AddModelError("VoucherCode", $"Voucher {voucher.Code} can apply for bill booking between {voucher.FromDate.ToString("dd/MM/yyyyy")} and {voucher.ToDate.ToString("dd/MM/yyyyy")}");
+                    return View(model);
+                }
+                model.Room = await RoomDAO.GetByID(model.RoomID);
+                if(Booking.GetPrice(model, false) < voucher.Condition)
+                {
+                    ModelState.AddModelError("VoucherCode", $"Voucher {voucher.Code} can apply for bill with value equal or bigger than {voucher.Condition} VND");
+                    return View(model);
+                }
             }
             try
             {
@@ -112,7 +135,7 @@ namespace WebNC_Project.Controllers
             }
             if (model.CheckinDate.Date >= model.CheckoutDate.Date)
             {
-                ModelState.AddModelError("CheckinDate", "Check in date must greater than check out date");
+                ModelState.AddModelError("CheckinDate", "Check in date must smaller than check out date");
                 return PartialView(model);
             }
             var room = await RoomDAO.GetByID(model.RoomID);
@@ -125,6 +148,40 @@ namespace WebNC_Project.Controllers
             {
                 ModelState.AddModelError("Child", $"Max child of room {model.RoomID} is {room.Child}");
                 return PartialView(model);
+            }
+            string validCheckIn = Booking.ValidCheckin(model.CheckinDate, model.CheckinDate);
+            if (validCheckIn != null)
+            {
+                ModelState.AddModelError("CheckinDate", validCheckIn);
+                return PartialView(model);
+            }
+            if (model.ValidCheckout != null)
+            {
+                ModelState.AddModelError("CheckoutDate", model.ValidCheckout);
+                return PartialView(model);
+            }
+            if (model.VoucherCode != null)
+            {
+                var voucher = await VoucherDAO.GetByID(model.VoucherCode);
+                if (voucher == null)
+                {
+                    ModelState.AddModelError("VoucherCode", $"Voucher {model.VoucherCode} does not existed");
+                    return PartialView(model);
+                }
+                if (!(voucher.FromDate.Date <= model.CheckinDate.Date && model.CheckinDate.Date <= voucher.ToDate.Date) &&
+                !(voucher.FromDate.Date <= model.CheckoutDate.Date && model.CheckoutDate.Date <= voucher.ToDate.Date))
+                {
+                    ModelState.AddModelError("VoucherCode", $"Voucher {voucher.Code} can apply for bill booking between {voucher.FromDate.ToString("dd/MM/yyyyy")} and {voucher.ToDate.ToString("dd/MM/yyyyy")}");
+                    return PartialView(model);
+                }
+                var bill = await BookingDAO.GetByID(model.ID);
+                model.Room = bill.Room;
+                model.BookingServices = bill.BookingServices;
+                if (Booking.GetPrice(model, false) < voucher.Condition)
+                {
+                    ModelState.AddModelError("VoucherCode", $"Voucher {voucher.Code} can apply for bill with value equal or bigger than {voucher.Condition} VND");
+                    return PartialView(model);
+                }
             }
             try
             {
@@ -175,7 +232,7 @@ namespace WebNC_Project.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Remove(int id)
+        public async Task<ActionResult> Cancel(int id)
         {
             var enti = await BookingDAO.GetByID(id);
             if(enti.Status != null)
@@ -184,7 +241,7 @@ namespace WebNC_Project.Controllers
             }
             try
             {
-                await BookingDAO.Remove(id);
+                await BookingDAO.CheckBooking(id, "cancel");
                 return Json(true, JsonRequestBehavior.AllowGet);
             }
             catch
@@ -195,8 +252,84 @@ namespace WebNC_Project.Controllers
 
         public async Task<ActionResult> Payment(int id)
         {
-            var invoice = await BookingDAO.GetByID(id);
-            return PartialView(invoice);
+            ViewBag.Bill = await BookingDAO.GetByID(id);
+            return PartialView();
+        }
+
+        [HttpPost]
+        [Obsolete]
+        public async Task<ActionResult> Payment(PaymentViewModel paymentInfo)
+        {
+            try
+            {
+                StripeConfiguration.SetApiKey("sk_test_51J08eWItPwG3qPOD3eeLCavMpFr4n5xKAqfS1BafirGOA4163GkHqQwZZ6L0rKMQqPRwzhv1y5mKjXj2udHTuto300DVYHegMf");
+                var bill = await BookingDAO.GetByID(paymentInfo.BillID);
+                var customerInfo = new CustomerCreateOptions
+                {
+                    Description = paymentInfo.CardName,
+                    Source = paymentInfo.StripeToken,
+                    Email = paymentInfo.Email,
+                    Metadata = new Dictionary<string, string>()
+                {
+                    { "Phone",paymentInfo.Phone }
+                }
+                };
+                var customerService = new CustomerService();
+                Stripe.Customer customer = customerService.Create(customerInfo);
+                var options = new ChargeCreateOptions
+                {
+                    Amount = (long?)(Booking.GetPrice(bill) * 100 / 23000),
+                    Currency = "usd",
+                    Description = "Chare for bill #" + paymentInfo.BillID,
+                    Customer = customer.Id
+                };
+                var service = new ChargeService();
+                Charge charge = service.Create(options);
+                await BookingDAO.CheckBooking(paymentInfo.BillID, "payment");
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return RedirectToAction("ErrorPayment");
+            }
+        }
+
+        public ActionResult ErrorPayment()
+        {
+            return View();
+        }
+
+        public async Task<ActionResult> FeedBack(int id)
+        {
+            var billinfo = await BookingDAO.GetByID(id);
+            FeedBackViewModel fb = new FeedBackViewModel()
+            {
+                BillID = id,
+                Content = billinfo.FeedBack,
+                Rate = (billinfo.Rate ?? 5)
+            };
+            return PartialView(fb);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> FeedBack(FeedBackViewModel model)
+        {
+            if (!ModelState.IsValid) return PartialView(model);
+            var billinfo = await BookingDAO.GetByID(model.BillID);
+            if(billinfo == null)
+            {
+                ModelState.AddModelError("Content", "Bill not found");
+                return PartialView(model);
+            }
+            try
+            {
+                await BookingDAO.FeedBack(model);
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
         }
 
 

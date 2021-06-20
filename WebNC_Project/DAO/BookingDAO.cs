@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data.Entity;
 using WebNC_Project.Models;
 using System.Data.Entity.Core.Objects;
+using WebNC_Project.ViewModel;
 
 namespace WebNC_Project.DAO
 {
@@ -52,13 +53,14 @@ namespace WebNC_Project.DAO
             }
         }
 
+        [Obsolete]
         public static async Task<IEnumerable<Customer>> GetCustomerAvailable()
         {
             using(ResortContext db = new ResortContext())
             {
                 return await db.Customers
                     .Include(c => c.Bookings)
-                    .Where(c => c.Bookings.All(b => b.Status == "checkout" || b.Status == "cancel" || b.Status == "payment"))
+                    .Where(c => c.Bookings.All(b => b.Status == "cancel" || (b.Status == "payment" && EntityFunctions.TruncateTime(b.CheckoutDate) <= DateTime.Now)))
                     .ToListAsync();
             }
         }
@@ -100,6 +102,7 @@ namespace WebNC_Project.DAO
                 enti.Adult = model.Adult;
                 enti.Child = model.Child;
                 enti.RoomID = model.RoomID;
+                enti.VoucherCode = model.VoucherCode;
                 return await db.SaveChangesAsync();
             }
         }
@@ -126,7 +129,7 @@ namespace WebNC_Project.DAO
             using (ResortContext db = new ResortContext())
             {
                 var enti = await db.BookingServices.Where(b => b.BookingID == model.BookingID && b.ServiceID == model.ServiceID).SingleOrDefaultAsync();
-                db.BookingServices.Remove(enti);
+                db.BookingServices.Remove(enti);                
                 return await db.SaveChangesAsync();
             }
         }
@@ -149,8 +152,19 @@ namespace WebNC_Project.DAO
         {
             using (ResortContext db = new ResortContext())
             {
-                var booking = await db.Bookings.FindAsync(id);
+                Booking booking = await db.Bookings.FindAsync(id);
                 booking.Status = status;
+                return await db.SaveChangesAsync();
+            }
+        }
+
+        public static async Task<int> FeedBack(FeedBackViewModel model)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                Booking booking = await db.Bookings.FindAsync(model.BillID);
+                booking.FeedBack = model.Content;
+                booking.Rate = model.Rate;
                 return await db.SaveChangesAsync();
             }
         }

@@ -35,6 +35,7 @@ namespace WebNC_Project.Areas.Server.Controllers
                     return View(model);
                 }
                 Session["UID"] = user.ID;
+                Session["Role"] = user.PermissionID;
                 return RedirectToAction("Index", "Home");
             }
             return View(model);

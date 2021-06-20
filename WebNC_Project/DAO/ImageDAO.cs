@@ -65,7 +65,7 @@ namespace WebNC_Project.DAO
                 {
                     AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
                     ThrowOnCancel = true
-                }).Child("imgsroom").Child(idroom).Child(fileName).PutAsync(stream, cancellation.Token);
+                }).Child("imgsroom").Child(idroom).Child(DateTime.Now.ToLongTimeString()).PutAsync(stream, cancellation.Token);
             try
             {
                 return await task;

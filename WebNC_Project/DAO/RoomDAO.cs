@@ -115,5 +115,25 @@ namespace WebNC_Project.DAO
                 return true;
             }
         }
+
+        [Obsolete]
+        public static async Task<IEnumerable<Room>> GetRoomAvailable(DateTime from, DateTime to)
+        {
+            using (ResortContext db = new ResortContext())
+            {
+                var list = await db.Rooms.Include(r => r.Bookings)
+                    .Where(r => r.Bookings.Any(b =>
+                    ((EntityFunctions.TruncateTime(b.CheckinDate) <= from.Date && from.Date <= EntityFunctions.TruncateTime(b.CheckoutDate)) ||
+                    (EntityFunctions.TruncateTime(b.CheckinDate) <= to.Date && to.Date <= EntityFunctions.TruncateTime(b.CheckoutDate))) &&
+                    (b.Status != "cancel")))
+                    .Select(r => r.ID)
+                    .ToListAsync();
+                return await db.Rooms.Include(r => r.Bookings)
+                    .Include(r => r.RoomType)
+                    .Include(r => r.Images)
+                    .Include(r => r.SuppliesForRooms.Select(s => s.Supply))
+                    .Where(r => !list.Contains(r.ID)).ToListAsync();
+            }
+        }
     }
 }

@@ -320,6 +320,7 @@
     <Compile Include="Models\SuppliesForRoom.cs" />
     <Compile Include="Models\Supply.cs" />
     <Compile Include="Models\Voucher.cs" />
+    <Compile Include="ViewModel\FeedBackViewModel.cs" />
     <Compile Include="ViewModel\HomePageViewModel.cs" />
     <Compile Include="ViewModel\LoginModel.cs" />
     <Compile Include="Areas\Server\ServerAreaRegistration.cs" />
@@ -331,6 +332,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel\PaymentViewModel.cs" />
     <Compile Include="ViewModel\ResetPassModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1381,6 +1383,7 @@
     <Content Include="resource\js\jquery.slicknav.js" />
     <Content Include="resource\js\main.js" />
     <Content Include="resource\js\owl.carousel.min.js" />
+    <Content Include="resource\js\payment.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Server\Views\web.config" />
@@ -1601,6 +1604,8 @@
     <Content Include="Views\Booking\Edit.cshtml" />
     <Content Include="Views\Booking\CallServices.cshtml" />
     <Content Include="Views\Booking\Payment.cshtml" />
+    <Content Include="Views\Booking\ErrorPayment.cshtml" />
+    <Content Include="Views\Booking\FeedBack.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

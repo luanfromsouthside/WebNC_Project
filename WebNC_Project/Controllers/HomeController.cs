@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using WebNC_Project.DAO;
+using WebNC_Project.Models;
 
 namespace WebNC_Project.Controllers
 {
@@ -12,27 +13,18 @@ namespace WebNC_Project.Controllers
     {
         public async Task<ActionResult> Index()
         {
-            
-            return View();
-        }
-
-        public async Task<ActionResult> DemoRoom()
-        {
-            var result = await RoomDAO.GetAll();
-            return PartialView(result.Take(4));
-        }
-
-        [ChildActionOnly]
-        public async Task<ActionResult> DemoService()
-        {
-            return PartialView();
-        }
-
-
-        public async Task<PartialViewResult> DemoVoucher()
-        {
+            var rooms = await RoomDAO.GetAll();
             var vouchers = await VoucherDAO.GetAvailable();
-            return PartialView(vouchers.Take(4));
+            var model = new DemoView();
+            model.Rooms = rooms.Take(4).ToList();
+            model.Vouchers = vouchers.Take(4).ToList();
+            return View(model);
+        }
+
+        public class DemoView
+        {
+            public List<Room> Rooms;
+            public List<Voucher> Vouchers;
         }
 
         [ChildActionOnly]

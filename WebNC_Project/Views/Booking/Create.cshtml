@@ -58,36 +58,43 @@
                             @Html.LabelFor(m => m.RoomID)
                         </div>
                         <div class="col-md-10 select-option">
-                            @Html.ValidationMessageFor(m => m.RoomID, "", new { @class = "text-danger" })
                             @Html.DropDownListFor(m => m.RoomID, listRooms, new { @placeholder = "Select Room", @class = "select-list" })
+                            @Html.ValidationMessageFor(m => m.RoomID, "", new { @class = "text-danger" })
                         </div>
                         <div class="col-md-2">
                             @Html.LabelFor(m => m.CheckinDate)
                         </div>
                         <div class="col-md-10">
-                            @Html.ValidationMessageFor(m => m.CheckinDate, "", new { @class = "text-danger" })
                             @Html.EditorFor(m => m.CheckinDate, new { htmlAttributes = new { @placeholder = "Enter check in date", @class = "date-input" } })
+                            @Html.ValidationMessageFor(m => m.CheckinDate, "", new { @class = "text-danger" })
                         </div>
                         <div class="col-md-2">
                             @Html.LabelFor(m => m.CheckoutDate)
                         </div>
                         <div class="col-md-10">
-                            @Html.ValidationMessageFor(m => m.CheckoutDate, "", new { @class = "text-danger" })
                             @Html.EditorFor(m => m.CheckoutDate, new { htmlAttributes = new { @placeholder = "Enter check out date", @class = "date-input" } })
+                            @Html.ValidationMessageFor(m => m.CheckoutDate, "", new { @class = "text-danger" })
                         </div>
                         <div class="col-md-2">
                             @Html.LabelFor(m => m.Adult)
                         </div>
                         <div class="col-md-10">
-                            @Html.ValidationMessageFor(m => m.Adult, "", new { @class = "text-danger" })
                             @Html.EditorFor(m => m.Adult, new { htmlAttributes = new { @placeholder = "Enter number of adult" } })
+                            @Html.ValidationMessageFor(m => m.Adult, "", new { @class = "text-danger" })
                         </div>
                         <div class="col-md-2">
                             @Html.LabelFor(m => m.Child)
                         </div>
                         <div class="col-md-10">
-                            @Html.ValidationMessageFor(m => m.Child, "", new { @class = "text-danger" })
                             @Html.EditorFor(m => m.Child, new { htmlAttributes = new { @placeholder = "Enter number of child" } })
+                            @Html.ValidationMessageFor(m => m.Child, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(m => m.VoucherCode)
+                        </div>
+                        <div class="col-md-10">
+                            @Html.EditorFor(m => m.VoucherCode, new { htmlAttributes = new { @placeholder = "Enter voucher code if you have" } })
+                            @Html.ValidationMessageFor(m => m.VoucherCode, "", new { @class = "text-danger" })
                         </div>
                         <div class="col-md-12 mt-3">
                             <button type="submit">Book Now</button>

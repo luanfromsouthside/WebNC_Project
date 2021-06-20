@@ -74,7 +74,7 @@
                                             <i class="fa fa-plus-square"></i>
                                             Dịch vụ sử dụng
                                         </strong>
-                                        @if (value.Status == null)
+                                        @if (value.CanEdit())
                                         {
                                             <span class="col-md-4">
                                                 <button onclick="CallSV(@value.ID)" class="btn btn-info btn-block">Chỉnh sửa dịch vụ</button>
@@ -102,7 +102,7 @@
                                             <i class="fa fa-plus-square"></i>
                                             Không có dịch vụ sử dụng
                                         </strong>
-                                        @if (value.Status == null)
+                                        @if (value.CanEdit())
                                         {
                                             <span class="col-md-4">
                                                 <button onclick="CallSV(@value.ID)" class="btn btn-info btn-block">Gọi dịch vụ</button>
@@ -118,9 +118,21 @@
                                         </span>
                                         <span class="col-md-3">@value.VoucherCode</span>
                                         <span class="col-md-3">
-                                            <strong><i class="fa fa-percent"> Giảm giá:</i></strong>
+                                            <strong><i class="fa fa-percent"></i> Giảm giá:</strong>
                                         </span>
                                         <span class="col-md-3">@value.Voucher.Discount %</span>
+                                    </p>
+                                }
+                                @if (value.FeedBack != null)
+                                {
+                                    <p class="row card-text">
+                                        <span class="col-md-3">
+                                            <strong><i class="fa fa-comments-o" aria-hidden="true"></i> Phản hồi:</strong>
+                                        </span>
+                                        <span class="col-md-6">@value.FeedBack</span>
+                                        <span class="col-md-3">
+                                            <strong>Rate: @value.Rate.Value <i class="fa fa-star"></i></strong>
+                                        </span>
                                     </p>
                                 }
                                 <p class="card-text d-flex justify-content-end">
@@ -129,14 +141,21 @@
                                 </p>
                             </div>
                             <div class="card-footer">
-                                @if (value.Status == null)
+                                @if (value.CanEdit())
                                 {
                                     <button onclick="Edit(@value.ID)" class="btn btn-info">Cập nhật hóa đơn</button>
-                                    <button onclick="Remove(@value.ID)" class="btn btn-danger">Hủy hóa đơn</button>
                                 }
-                                @if (value.Status != "payment" && value.Status != "cancel")
+                                @if (value.CanPay())
                                 {
                                     <button onclick="Payment(@value.ID)" class="btn btn-success">Thanh toán hóa đơn</button>
+                                }
+                                @if (value.CanFeedBack())
+                                {
+                                    <button onclick="FeedBack(@value.ID)" class="btn btn-primary">FeedBack</button>
+                                }
+                                @if (value.CheckinDate.Date > DateTime.Now.Date)
+                                {
+                                    <button onclick="Cancel(@value.ID)" class="btn btn-danger">Hủy hóa đơn</button>
                                 }
                             </div>
                         </div>
@@ -155,28 +174,9 @@
 </div>
 <input type="hidden" id="toast-msg" value="@ViewBag.Msg" />
 @section scripts{
+    <script src="https://js.stripe.com/v3/"></script>
     <script src="~/resource/js/toastr.js"></script>
     <script>
-        if ($("#toast-msg").val) {
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "positionClass": "toast-top-right",
-                "onClick": null,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "8000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            };
-            toastr['@(ViewBag.Stt ? "success" : "danger")']('@ViewBag.Msg');
-        }
-
-
-
         function Edit(id) {
             $.get("@Url.Action("Edit")", { id: id } , function (res) {
                 $("#BookingModalBody").html(res);
@@ -184,14 +184,33 @@
             })
         };
 
-        function Remove(id) {
-            $.post("@Url.Action("Remove")", { id: id}, function (res) {
+        function FeedBack(id) {
+            $.get("@Url.Action("FeedBack")", { id: id } , function (res) {
+                $("#BookingModalBody").html(res);
+                $("#BookingModal").modal('show');
+            })
+        };
+
+        function Cancel(id) {
+            $.post("@Url.Action("Cancel")", {id: id}, function (res) {
                 if (res == true) {
-                    toastr.success("Cancel success", "Success")
-                    window.location.reload();
+                    swal({
+                        title: "Cancel success",
+                        text: "Success",
+                        type: "success",
+                        closeOnConfirm: false
+                    });
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 500);
                 }
                 else {
-                    toastr.error("Cancel failed", "Error")
+                    swal({
+                        title: "Cancel failed",
+                        text: "Failed",
+                        type: "error",
+                        closeOnConfirm: false
+                    });
                 }
             })
         }
@@ -208,6 +227,19 @@
             var form = $("#edit_form");
             var data = form.serialize();
             $.post("@Url.Action("Edit")", data , function (res) {
+                    if (res == true) {
+                        modal.modal('hide');
+                        window.location.reload();
+                    }
+                    else $("#BookingModalBody").html(res);
+                })
+        }
+
+        function SubmitFeedBack() {
+            var modal = $("#BookingModal");
+            var form = $("#feedback-form");
+            var data = form.serialize();
+            $.post("@Url.Action("FeedBack")", data , function (res) {
                     if (res == true) {
                         modal.modal('hide');
                         window.location.reload();
